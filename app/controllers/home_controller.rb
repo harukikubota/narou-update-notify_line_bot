@@ -1,6 +1,8 @@
 class HomeController < ApplicationController
   require 'line/bot'
 
+  REGEP_NAROU_URL = 'https://ncode.syosetu.com/'
+
   # GET /
   def index
     render json: {"text": "hello"}
