@@ -4,8 +4,8 @@ class UserCheckNovel < ApplicationRecord
 
   class << self
     def set_entity(user_id, novel_id)
-      record = where(user_id: user_id, novel_id: novel_id)
-      record = create(user_id: @user.id, novel_id: novel.id) unless record
+      record = self.where(user_id: user_id, novel_id: novel_id)
+      record ||= self.create(user_id: @user.id, novel_id: novel.id)
     end
   end
 end
