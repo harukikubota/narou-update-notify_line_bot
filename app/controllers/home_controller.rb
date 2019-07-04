@@ -25,6 +25,9 @@ class HomeController < ApplicationController
         when Line::Bot::Event::MessageType::Text
           text = event.message['text']
           user_id = event['source']['userId']
+          p '-------------------------------'
+          p user_id
+          p '-------------------------------'
 
           case text
           when REGEP_NAROU_URL
