@@ -1,4 +1,4 @@
 class UserCheckNovel < ApplicationRecord
-  be_longs_to :user
-  be_longs_to :novel
+  belongs_to :user
+  belongs_to :novel
 end
