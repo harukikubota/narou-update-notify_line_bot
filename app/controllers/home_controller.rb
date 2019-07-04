@@ -65,7 +65,6 @@ class HomeController < ApplicationController
 
   def send_novel_list(user_info)
     user = User.find(@user.id)
-
     message = "【一覧の表示】\n"
     user.novels.each.with_index(1) { |novel, index| message += ("\n" + index.to_s + '. ' + novel.title) }
     @messenger.reply(user_info[1], message)
@@ -89,9 +88,11 @@ class HomeController < ApplicationController
 
   # BIGINES LOGIC
   def add_novel(user_info, ncode)
-    user_id = user_info[0]
     novel = Novel.build_by_ncode(ncode)
-    UserCheckNovel.set_entity(@user.id, novel.id)
+    hoge = UserCheckNovel.set_entity(@user.id, novel.id)
+    p 'debug start'
+    p hoge
+    p 'debug end'
     message = nil
 
     if novel.save
