@@ -31,7 +31,7 @@ module Narou::UpdateCheck extend self
 
     def is_exist_next_episode?(novel)
       _, episode_id = Narou.fetch_episode(novel.ncode)
-      episode_id = Narou.next_episode_id(novel.last_episode_id)
+      episode_id > novel.last_episode_id
     end
 
     def find_update_novel_to_user(novel)

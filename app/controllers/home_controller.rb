@@ -90,9 +90,6 @@ class HomeController < ApplicationController
   def add_novel(user_info, ncode)
     novel = Novel.build_by_ncode(ncode)
     hoge = UserCheckNovel.set_entity(@user.id, novel.id)
-    p 'debug start'
-    p hoge
-    p 'debug end'
     message = nil
 
     if novel.save
