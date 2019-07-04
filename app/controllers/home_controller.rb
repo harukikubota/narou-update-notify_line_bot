@@ -31,6 +31,8 @@ class HomeController < ApplicationController
             add_novel(text, user_id)
           when 'hoge'
             send_message(text, user_id)
+          else
+            reply_message('リプライだお')
           end
         end
       end
@@ -41,6 +43,28 @@ class HomeController < ApplicationController
 
   private
 
+  def reply_message(text)
+    message = {
+      type: 'text',
+      text: event.message['text']
+    }
+    client.reply_message(event['replyToken'], message)
+  end
+
+  def send_message(user_id, text)
+    message = {
+      type: 'text',
+      text: "メッセージを送信したよ : #{text}"
+    }
+    client.push_message(user_id, message)
+  end
+
+  def client
+    @client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
+    }
+  end
   def add_novel
     novel = Novel.build_by_narou_url(create_params)
     novel.save ? created(novel) : unprocessable_entity(novel)
