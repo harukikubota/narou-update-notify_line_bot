@@ -25,9 +25,6 @@ class HomeController < ApplicationController
         when Line::Bot::Event::MessageType::Text
           text = event.message['text']
           user_id = event['source']['userId']
-          p '-------------------------------'
-          p user_id
-          p '-------------------------------'
 
           case text
           when REGEP_NAROU_URL
@@ -43,13 +40,6 @@ class HomeController < ApplicationController
   end
 
   private
-
-  def client
-    @client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
-    }
-  end
 
   def add_novel
     novel = Novel.build_by_narou_url(create_params)
