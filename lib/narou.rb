@@ -10,7 +10,7 @@ module Narou
     SEP = '/'
 
     def narou_url(novel)
-      NAROU_NOVEL_URL + novel.ncode + SEP + next_episode_id(novel.last_episode_id).to_s + SEP
+      NAROU_NOVEL_URL + novel.ncode + SEP + novel.last_episode_id.to_s + SEP
     end
 
     def next_episode_id(novel_last_episode_id)

@@ -22,10 +22,10 @@ ActiveRecord::Schema.define(version: 2019_07_04_113914) do
 
   create_table "user_check_novels", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "group_id"
+    t.integer "novel_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_user_check_novels_on_group_id"
+    t.index ["novel_id"], name: "index_user_check_novels_on_novel_id"
     t.index ["user_id"], name: "index_user_check_novels_on_user_id"
   end
 
