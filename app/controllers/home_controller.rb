@@ -28,11 +28,11 @@ class HomeController < ApplicationController
 
           case text
           when REGEP_NAROU_URL
-            add_novel(text, user_id)
+            add_novel(user_id, text)
           when 'hoge'
-            send_message(text, user_id)
+            send_message(user_id, text)
           else
-            reply_message('リプライだお')
+            reply_message(event['replyToken'], 'リプライだお')
           end
         end
       end
@@ -43,12 +43,12 @@ class HomeController < ApplicationController
 
   private
 
-  def reply_message(text)
+  def reply_message(reply_token, text)
     message = {
       type: 'text',
-      text: event.message['text']
+      text: text
     }
-    client.reply_message(event['replyToken'], message)
+    client.reply_message(reply_token, message)
   end
 
   def send_message(user_id, text)
@@ -65,6 +65,7 @@ class HomeController < ApplicationController
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
   end
+
   def add_novel
     novel = Novel.build_by_narou_url(create_params)
     novel.save ? created(novel) : unprocessable_entity(novel)
