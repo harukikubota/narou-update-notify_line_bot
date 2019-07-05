@@ -81,18 +81,19 @@ class HomeController < ApplicationController
     "追加しました。\n#{novel.title}"
   end
 
-  def unprocessable_entity(error)
-    "登録に失敗しました。\n#{error}"
+  def unprocessable_entity(model)
+    logger.info(model)
+    "登録に失敗しました。\nしばらく時間を置いて再度お願いします。"
   end
   # response message END ----------------------------------- #
 
   # BIGINES LOGIC
   def add_novel(user_info, ncode)
     novel = Novel.build_by_ncode(ncode)
-    hoge = UserCheckNovel.set_entity(@user.id, novel.id)
     message = nil
 
-    if novel.save
+    if novel&.save
+      UserCheckNovel.set_entity(@user.id, novel.id)
       message = created(novel)
     else
       message = unprocessable_entity(novel)

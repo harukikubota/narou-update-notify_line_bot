@@ -7,7 +7,8 @@ class Novel < ApplicationRecord
     def build_by_ncode(ncode)
       novel = find_by_ncode(ncode)
       return novel if novel
-      title, last_episode_id = Narou.fetch_episode(ncode)
+      ret, title, last_episode_id = Narou.fetch_episode(ncode)
+      return nil unless ret
       novel = create(
         ncode: ncode,
         title: title,
