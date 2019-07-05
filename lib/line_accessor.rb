@@ -21,6 +21,7 @@ class LineAccessor
   end
 
   private
+
   def build_message(message_text)
     {
       type: 'text',

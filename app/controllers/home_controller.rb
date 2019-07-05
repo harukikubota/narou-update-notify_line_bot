@@ -3,10 +3,6 @@ require 'line/bot'
 
 class HomeController < ApplicationController
 
-  BASE_NAROU_URL = 'ncode.syosetu.com/'
-  REG_NCODE = %r!n[0-9]{4}[a-z]{2}!
-  REG_NAROU_URL = %r!(http|https)://#{BASE_NAROU_URL}#{REG_NCODE}/!
-
   # GET /
   def index
     render json: {"text": "hello"}
@@ -39,12 +35,15 @@ class HomeController < ApplicationController
 
     case req_info.type
     when :add_novel
-      message = add_novel(user_info, req_info.ncode)
+      ncode = @text.match(Constants::REG_NCODE).to_s
+      message = add_novel(user_info, ncode)
       send_add_novel(user_info, message)
     when :help
       send_help(user_info)
     when :list
       send_novel_list(user_info)
+    when :line
+      @messenger.reply(user_info[1], 'Hello!')
     else
       send_unsupported(user_info)
     end
@@ -59,31 +58,29 @@ class HomeController < ApplicationController
   end
 
   def send_help(user_info)
-    message = "【ヘルプ】\n\n1. 小説の追加\n  なろうのURLを送信してください。\n\n2.小説の一覧\n  「一覧」を入力してください。"
-    @messenger.reply(user_info[1], message)
+    @messenger.reply(user_info[1], Constants::REPLY_MESSAGE_HELP)
   end
 
   def send_novel_list(user_info)
     user = User.find(@user.id)
-    message = "【一覧の表示】\n"
+    message = Constants::REPLY_MESSAGE_LIST
     user.novels.each.with_index(1) { |novel, index| message += ("\n" + index.to_s + '. ' + novel.title) }
     @messenger.reply(user_info[1], message)
   end
 
   def send_unsupported(user_info)
-    message = "【案内】\n\n入力された内容では何もすることができません。\n\n操作に困ったら「ヘルプ」を入力してください。"
-    @messenger.reply(user_info[1], message)
+    @messenger.reply(user_info[1], Constants::REPLY_MESSAGE_UNSUPPORTED)
   end
   # response END ------------------------------------------- #
 
   # response message START --------------------------------- #
   def created(novel)
-    "追加しました。\n#{novel.title}"
+    Constants::REPLY_MESSAGE_ADD_CREATE + novel.title
   end
 
   def unprocessable_entity(model)
     logger.info(model)
-    "登録に失敗しました。\nしばらく時間を置いて再度お願いします。"
+    Constants::REPLY_MESSAGE_ADD_FAILURE
   end
   # response message END ----------------------------------- #
 
@@ -101,32 +98,20 @@ class HomeController < ApplicationController
     message
   end
 
-  def is_narou_url?(url)
-    REG_NAROU_URL === url
-  end
-
-  def is_help?(text)
-    reg = /help|ヘルプ|へるぷ|Help|HELP/
-    reg === text
-  end
-
-  def is_list?(text)
-    reg = /一覧|list/
-    reg === text
-  end
-
   def get_request_info(text)
-    request_info = Struct.new(:type, :ncode)
+    request_info = Struct.new(:type)
 
-    if is_narou_url?(text)
-      ncode = text.match(REG_NCODE).to_s
-      request_info.new(:add_novel, ncode)
-    elsif is_help?(text)
-      request_info.new(:help, 'none')
-    elsif is_list?(text)
-      request_info.new(:list, 'none')
+    case text
+    when Constants::REG_LINE_REQUEST_MESSAGE
+      request_info.new(Constants::Request::TYPE_LINE_REQUEST)
+    when Constants::REG_NAROU_URL
+      request_info.new(Constants::Request::TYPE_ADD_NOVEL)
+    when Constants::REG_HELP_COMMAND
+      request_info.new(Constants::Request::TYPE_HELP)
+    when Constants::REG_LIST_COMMAND
+      request_info.new(Constants::Request::TYPE_LIST)
     else
-      request_info.new(:none, 'none')
+      request_info.new(Constants::Request::TYPE_NONE)
     end
   end
 
