@@ -21,7 +21,7 @@ module Narou
       uri = URI.parse(NAROU_API_URL + "?/lim=1&of=t-ga&ncode=#{ncode}&out=json")
       json = Net::HTTP.get(uri)
       result = JSON.parse(json)
-      return false if (result[0])["allcount"] = 0
+      return false if (result[0])["allcount"] == 0
       _, info = result
       [
         true,
