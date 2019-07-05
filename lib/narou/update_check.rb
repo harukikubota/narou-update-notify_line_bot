@@ -4,7 +4,8 @@ require 'date'
 module Narou::UpdateCheck extend self
 
   def batch
-    can_notify_time_range = (7..22)
+    # UTC 0での計算 JT 7 ~ 22
+    can_notify_time_range = [*1..14, *22..23]
     now_hour = DateTime.now.hour
     can_notify_time_range.include?(now_hour) ? UpdateCheck.new.run : Rails.logger.info('実行可能時間外')
   end
