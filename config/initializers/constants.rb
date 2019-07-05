@@ -44,7 +44,8 @@ module Constants
 
   ## LIST
   REPLY_MESSAGE_LIST_HEAD = "【一覧の表示】\n".freeze
-  REPLY_MESSAGE_LIST = message_build.call(/#{REG_REPLY_MESSAGE}_LIST_/).freeze
+  REPLY_MESSAGE_LIST_NO_NOVEL = '登録しているなろう小説はありません。'.freeze
+  REPLY_MESSAGE_LIST = message_build.call(/#{REG_REPLY_MESSAGE}_LIST_[^N]/).freeze
 
   ## UNSUPPORTED
   REPLY_MESSAGE_UNSUPPORTED_HEAD = '【案内】'.freeze
@@ -54,11 +55,18 @@ module Constants
 
   module Request
     # Request Type
-    TYPE_ADD_NOVEL = :add_novel
-    TYPE_HELP = :help
-    TYPE_LIST = :list
-    TYPE_LINE_REQUEST = :line
-    TYPE_NONE = :none
+    ## Follow UnFollow
+    TYPE_FOLLOW = :follow
+    TYPE_UNFOLLOW = :unfollow
+
+    ## Text
+    ### 暫定でtextを指定する。
+    TYPE_TEXT = :text
+    TYPE_TEXT_ADD_NOVEL = :add_novel
+    TYPE_TEXT_HELP = :help
+    TYPE_TEXT_LIST = :list
+    TYPE_TEXT_LINE_REQUEST = :line
+    TYPE_TEXT_NONE = :none
   end
 
   module Line

@@ -1,6 +1,3 @@
-require_relative '../../lib/line_accessor.rb'
-require 'line/bot'
-
 class HomeController < ApplicationController
 
   # GET /
@@ -10,40 +7,26 @@ class HomeController < ApplicationController
 
   # POST /
   def callback
-    body = request.body.read
+    request_info = execute_request
 
-    @messenger = LineAccessor.new
-    @client = @messenger.client
+    user_info = request_info.user_info
+    @user = User.find_or_create(user_info.line_id)
 
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless @client.validate_signature(body, signature)
-      head :bad_request
-    end
-
-    @event = (@client.parse_events_from(body))[0]
-    case @event
-    when Line::Bot::Event::Message
-      case @event.type
-       when Line::Bot::Event::MessageType::Text
-         @text = @event.message['text']
-      end
-    end
-
-    user_info = create_user_info
-    @user = User.find_or_create(user_info[0])
-    req_info = get_request_info(@text)
-
-    case req_info.type
+    case request_info.type
+    when :follow
+      User.enable_to_user(@user)
+    when :unfollow
+      User.disable_to_user(@user)
     when :add_novel
-      ncode = @text.match(Constants::REG_NCODE).to_s
-      message = add_novel(user_info, ncode)
+      ncode = @request_info.user_send_text.match(Constants::REG_NCODE).to_s
+      message = add_novel(ncode)
       send_add_novel(user_info, message)
     when :help
       send_help(user_info)
     when :list
       send_novel_list(user_info)
     when :line
-      @messenger.reply(user_info[1], 'Hello!')
+      send_respond_to_communication(user_info)
     else
       send_unsupported(user_info)
     end
@@ -54,22 +37,26 @@ class HomeController < ApplicationController
 
   # response START ----------------------------------------- #
   def send_add_novel(user_info, message)
-    @messenger.reply(user_info[1], message)
+    @messenger.reply(user_info.reply_token, message)
   end
 
   def send_help(user_info)
-    @messenger.reply(user_info[1], Constants::REPLY_MESSAGE_HELP)
+    @messenger.reply(user_info.reply_token, Constants::REPLY_MESSAGE_HELP)
   end
 
   def send_novel_list(user_info)
-    user = User.find(@user.id)
     message = Constants::REPLY_MESSAGE_LIST
-    user.novels.each.with_index(1) { |novel, index| message += ("\n" + index.to_s + '. ' + novel.title) }
-    @messenger.reply(user_info[1], message)
+    @user.novels.count.zero? ? message += Constants::REPLY_MESSAGE_LIST_NO_NOVEL :
+      @user.novels.each.with_index(1) { |novel, index| message += ("\n" + index.to_s + '. ' + novel.title) }
+    @messenger.reply(user_info.reply_token, message)
+  end
+
+  def send_respond_to_communication(user_info)
+    @messenger.reply(user_info.reply_token, 'Hello!')
   end
 
   def send_unsupported(user_info)
-    @messenger.reply(user_info[1], Constants::REPLY_MESSAGE_UNSUPPORTED)
+    @messenger.reply(user_info.reply_token, Constants::REPLY_MESSAGE_UNSUPPORTED)
   end
   # response END ------------------------------------------- #
 
@@ -85,7 +72,7 @@ class HomeController < ApplicationController
   # response message END ----------------------------------- #
 
   # BIGINES LOGIC
-  def add_novel(user_info, ncode)
+  def add_novel(ncode)
     novel = Novel.build_by_ncode(ncode)
     message = nil
 
@@ -96,32 +83,6 @@ class HomeController < ApplicationController
       message = unprocessable_entity(novel)
     end
     message
-  end
-
-  def get_request_info(text)
-    request_info = Struct.new(:type)
-
-    case text
-    when Constants::REG_LINE_REQUEST_MESSAGE
-      request_info.new(Constants::Request::TYPE_LINE_REQUEST)
-    when Constants::REG_NAROU_URL
-      request_info.new(Constants::Request::TYPE_ADD_NOVEL)
-    when Constants::REG_HELP_COMMAND
-      request_info.new(Constants::Request::TYPE_HELP)
-    when Constants::REG_LIST_COMMAND
-      request_info.new(Constants::Request::TYPE_LIST)
-    else
-      request_info.new(Constants::Request::TYPE_NONE)
-    end
-  end
-
-  def create_user_info
-    user_id = @event["source"]["userId"]
-    reply_token = @event["replyToken"]
-    [
-      user_id,
-      reply_token
-    ]
   end
 
 end

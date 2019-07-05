@@ -13,5 +13,13 @@ class User < ApplicationRecord
         )
       end
     end
+
+    def enable_to_user(user)
+      user.update(enable: true) unless user.enable?
+    end
+
+    def disable_to_user(user)
+      user.update(enable: false)
+    end
   end
 end
