@@ -14,12 +14,13 @@ module Constants
   NAROU_API_NOVEL_EPISODE_COUNT = 'general_all_no'.freeze
 
   # REGEXP
-  REG_NCODE = /n[0-9]{4}[a-z]{2}/.freeze
+  REG_NCODE = /n[0-9]{4}[a-z]{1,2}/.freeze
   REG_NAROU_URL = %r{(http|https)://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
   REG_HELP_COMMAND = /help|ヘルプ|へるぷ|Help|HELP/.freeze
   REG_LIST_COMMAND = /一覧|list/.freeze
   REG_DELETE_COMMAND = /削除|[Dd]elete/.freeze
   REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
+  REG_DEBUG_COMMAND = /デバッグ|で|[Dd]/.freeze
   REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
   REG_LINE_REQUEST_MESSAGE = /Hello, world/.freeze
 
@@ -86,6 +87,18 @@ module Constants
     TYPE_TEXT_LIST = :list
     TYPE_TEXT_INFO = :info
     TYPE_TEXT_LINE_REQUEST = :line
+    TYPE_TEXT_DEBUG = :debug
     TYPE_TEXT_NONE = :none
+  end
+
+  module LineMessage
+    MAX_SEND_MESSAGE_SIZE = 5
+
+    ERROR_OVER_MAX_SIZE = '応答メッセージの送信可能数を超えています。'
+  end
+
+  module LineMessage::MessageType
+    TYPE_PLANE = 'text'.freeze
+    TYPE_CAROUSEL = 'carousel'.freeze
   end
 end
