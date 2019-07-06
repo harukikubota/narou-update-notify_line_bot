@@ -43,6 +43,8 @@ heroku run rake db:migrate
 ``` bash
 heroku config:set LINE_CHANNEL_SECRET='チャンネルシークレット'
 heroku config:set LINE_CHANNEL_TOKEN='チャンネルトークン'
+heroku config:add LANG=ja_JP.UTF-8
+heroku config:add TZ=Asia/Tokyo
 ```
 設定する値は[LINEアカウント設定手順書](./line_account.md)で取得したもの。
 

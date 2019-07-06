@@ -1,4 +1,5 @@
 class RequestInfo
+
   def initialize(type, request_data)
     @type = type
     @request_data = request_data
@@ -23,7 +24,7 @@ class RequestInfo
     case @type
     when Constants::Request::TYPE_TEXT
       @text = @request_data.message['text']
-      @type = get_request_type_by_text
+      @type = request_type_by_text
     when Constants::Request::TYPE_FOLLOW, Constants::Request::TYPE_UNFOLLOW
       #no-op
     end
@@ -31,12 +32,16 @@ class RequestInfo
     create_user_info
   end
 
-  def get_request_type_by_text
+  def request_type_by_text
     case @text
     when Constants::REG_LINE_REQUEST_MESSAGE
       Constants::Request::TYPE_TEXT_LINE_REQUEST
     when Constants::REG_NAROU_URL
       Constants::Request::TYPE_TEXT_ADD_NOVEL
+    when Constants::REG_DELETE_COMMAND
+      Constants::Request::TYPE_TEXT_DELETE
+    when Constants::REG_INFO_COMMAND
+      Constants::Request::TYPE_TEXT_INFO
     when Constants::REG_HELP_COMMAND
       Constants::Request::TYPE_TEXT_HELP
     when Constants::REG_LIST_COMMAND

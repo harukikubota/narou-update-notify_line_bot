@@ -1,12 +1,14 @@
 require 'line/bot'
-require_relative '../../lib/line_request/line_accessor.rb'
+require_relative '../../lib/line_request/line_messenger.rb'
+require_relative '../../lib/line_request/line_message.rb'
 require_relative '../../lib/line_request/request_info.rb'
 
 class ApplicationController < ActionController::API
-  def execute_request
+  def proc_request
     body = request.body.read
 
-    @messenger = LineAccessor.new
+    @messenger = LineMessenger.new
+    @message_template
     @client = @messenger.client
 
     signature = request.env['HTTP_X_LINE_SIGNATURE']

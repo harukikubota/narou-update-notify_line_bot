@@ -1,4 +1,5 @@
 require_relative '../narou.rb'
+require_relative '../line_request/line_messenger.rb'
 require 'date'
 
 module Narou::UpdateCheck extend self
@@ -55,12 +56,12 @@ module Narou::UpdateCheck extend self
     def build_notify_data(items)
       message_title = "#{items.count}件の更新がありました。"
       message_body = ""
-      items.each.with_index(1) {|item, index| message_body += "\n\n#{index}. #{item.novel_title}\n#{item.novel_url}"}
+      items.each.with_index(1) { |item, index| message_body += "\n\n#{index}. #{item.novel_title}\n#{item.novel_url}" }
       message_title + message_body
     end
 
     def client
-      @client ||= LineAccessor.new
+      @client ||= LineMessenger.new
     end
   end
 end
