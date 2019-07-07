@@ -21,7 +21,8 @@ module NarouUpdateNotifyLineBot
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W(#{Rails.root}/lib)
+    config.eager_load_paths += %W(#{Rails.root}/lib)
     config.enable_dependency_loading = true
     config.active_record.default_timezone = :local
     config.time_zone = 'Tokyo'

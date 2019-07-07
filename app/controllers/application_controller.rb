@@ -29,6 +29,8 @@ class ApplicationController < ActionController::API
       event_type = Constants::Request::TYPE_FOLLOW
     when Line::Bot::Event::Unfollow
       event_type = Constants::Request::TYPE_UNFOLLOW
+    else
+      event_type = Constants::Request::TYPE_NONE
     end
 
     RequestInfo.new(event_type, event)

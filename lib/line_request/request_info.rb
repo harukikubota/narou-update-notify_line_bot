@@ -32,6 +32,15 @@ class RequestInfo
     create_user_info
   end
 
+  def create_user_info
+    user_info_ele = Struct.new(:line_id, :reply_token)
+
+    line_id = @request_data['source']['userId']
+    reply_token = @request_data['replyToken']
+
+    @user_info = user_info_ele.new(line_id, reply_token)
+  end
+
   def request_type_by_text
     case @text
     when Constants::REG_LINE_REQUEST_MESSAGE
@@ -46,17 +55,10 @@ class RequestInfo
       Constants::Request::TYPE_TEXT_HELP
     when Constants::REG_LIST_COMMAND
       Constants::Request::TYPE_TEXT_LIST
+    when Constants::REG_DEBUG_COMMAND
+      Rails.env != 'development' ? Constants::Request::TYPE_NONE : Constants::Request::TYPE_TEXT_DEBUG
     else
-      Constants::Request::TYPE_TEXT_NONE
+      Constants::Request::TYPE_NONE
     end
-  end
-
-  def create_user_info
-    user_info_ele = Struct.new(:line_id, :reply_token)
-
-    line_id = @request_data['source']['userId']
-    reply_token = @request_data['replyToken']
-
-    @user_info = user_info_ele.new(line_id, reply_token)
   end
 end

@@ -20,7 +20,7 @@ module Constants
   REG_LIST_COMMAND = /一覧|list/.freeze
   REG_DELETE_COMMAND = /削除|[Dd]elete/.freeze
   REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
-  REG_DEBUG_COMMAND = /デバッグ|で|[Dd]/.freeze
+  REG_DEBUG_COMMAND = /デバッグ|で|[Dd]/.freeze if Rails.env == 'development'
   REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
   REG_LINE_REQUEST_MESSAGE = /Hello, world/.freeze
 
@@ -29,48 +29,127 @@ module Constants
   CAN_NOTIFY_TIME_RANGE = Rails.env == 'production' ? [*7..22] : [*0..23]
 
   # 応答メッセージ
-  ## MessageBuild
-  # リプライメッセージを作成する。
-  # 引数のパターンを含む定数を、宣言順に結合したメッセージにして返す。
-  #
-  message_build = ->(pattern) {
-    constants.grep(pattern)
-      .map { |const| const_get(const) }
-      .inject('') { |message, body| message += body; message } }
+
+  ## FOLLOW
+  REPLY_MESSAGE_FOLLOW_RETURN = <<~MES.chomp
+    お帰りなさい！
+
+    使い方がわからない場合は「ヘルプ」と入力してください！
+  MES
+
+  REPLY_MESSAGE_FOLLOW_FIRST_ = <<~MES.chomp
+    友だち追加ありがとうございます0x100001
+    【使い方説明】
+    ①更新監視を登録したいなろう小説の追加
+    ⇨なろう小説のURLを送信します。
+    例：
+    https://ncode.syosetu.com/n2267be/
+
+    ②更新監視に登録されているなろう小説の一覧を表示
+    ⇨「一覧」を含むメッセージを送信します。
+    例：
+    一覧を表示して0x100078
+
+    ③使い方が分からなくなった0x10007C
+    ⇨「ヘルプ」を含むメッセージを送信します。
+    例：
+    ヘルプ0x100099
+
+    使い方は以上になります！
+    要望などあれば作者までお願いします(´°v°)/んぴｯ
+  MES
+
+  ## UNFOLLOW
+  # no message
 
   ## ADD
-  REPLY_MESSAGE_ADD_CREATE = "追加しました。\n".freeze
-  REPLY_MESSAGE_ADD_FAILURE = "登録に失敗しました。\nしばらく時間を置いて再度お願いします。".freeze
-  REPLY_MESSAGE_ADD_FAILURE_MAX_REGIST = "登録可能上限を超えています。\n\n・上限について⇨インフォメーション\n\n削除について⇨削除"
+  def self.reply_success_novel_add(novel_title)
+    <<~MES.chomp
+      登録しました。
+      #{novel_title}
+    MES
+  end
+
+  def self.reply_already_registered_novel(novel_title)
+    <<~MES.chomp
+      すでに登録されています。
+      #{novel_title}
+    MES
+  end
+
+  REPLY_MESSAGE_ADD_FAILURE = <<~MES.chomp
+    登録に失敗しました。
+    しばらく時間を置いて再度お願いします。
+  MES
+
+  REPLY_MESSAGE_ADD_FAILURE_MAX_REGIST = <<~MES.chomp
+    "登録可能上限を超えています。
+
+    ・上限について⇨インフォメーション
+
+    ・削除について⇨削除"
+  MES
 
   ## HELP
-  REPLY_MESSAGE_HELP_HEAD = '【ヘルプ】'.freeze
-  REPLY_MESSAGE_HELP_BODY_NOVEL_ADD = "\n\n1. 小説の追加\n  なろうのURLを送信してください。".freeze
-  REPLY_MESSAGE_HELP_BODY_NOVEL_LIST = "\n\n2. 小説の一覧\n  「一覧」を入力してください。".freeze
-  REPLY_MESSAGE_HELP = REPLY_MESSAGE_HELP_HEAD + message_build.call(/#{REG_REPLY_MESSAGE}_HELP_BODY/).freeze
+REPLY_MESSAGE_HELP = <<~MES.chomp
+【ヘルプ】
+1. 小説の追加
+  なろうのURLを送信してください。
+
+2. 小説の一覧
+  「一覧」を入力してください。
+
+3. 小説の削除
+  「削除」を入力してください。
+
+4. インフォメーション
+  「インフォメーション」を入力してください
+MES
 
   ## LIST
-  REPLY_MESSAGE_LIST_HEAD = "【一覧の表示】\n".freeze
-  REPLY_MESSAGE_LIST_NO_NOVEL = '登録しているなろう小説はありません。'.freeze
-  REPLY_MESSAGE_LIST = message_build.call(/#{REG_REPLY_MESSAGE}_LIST_[^N]/).freeze
+  REPLY_MESSAGE_LIST_HEAD = '【一覧の表示】'.freeze
+  REPLY_MESSAGE_LIST_NO_ITEM = <<~MES.chomp
+    #{REPLY_MESSAGE_LIST_HEAD}
+
+    現在登録しているなろう小説はありません。
+  MES
+
+  def reply_list_any_item(items)
+    <<~MES.chomp
+      #{REPLY_MESSAGE_LIST_HEAD}
+
+      #{items}
+    MES
+  end
 
   ## DELETE
-  REPLY_MESSAGE_DELETE_HEAD = '【登録の削除】'.freeze
-  REPLY_MESSAGE_DELETE_BODY_INFO = "\n\n現在未対応です。"
-  REPLY_MESSAGE_DELETE = message_build.call(/#{REG_REPLY_MESSAGE}_DELETE_/).freeze
+  REPLY_MESSAGE_DELETE = <<~MES.chomp
+    【登録の削除】
+
+    現在未対応です。
+  MES
 
   ## INFORMATION
-  REPLY_MESSAGE_INFO_HEAD = '【インフォメーション】'.freeze
-  REPLY_MESSAGE_INFO_BODY_NOW_REGIST_COUNT = "\n\n【現在の登録数】"
-  REPLY_MESSAGE_INFO_BODY_MAX_REGIST = "\n\n【登録可能上限】"
-  REPLY_MESSAGE_INFO_BODY_TWITTER = "\n\n【Twitter】\n↓要望、バグなどはこちらまで↓\nhttps://twitter.com/Maaya_pd"
-  REPLY_MESSAGE_INFO = REPLY_MESSAGE_INFO_HEAD + REPLY_MESSAGE_INFO_BODY_TWITTER
+  def self.reply_information(now_regist_count, regist_max)
+    <<~MES.chomp
+      【インフォメーション】
+
+      【現在の登録数】 #{now_regist_count}
+      【登録可能上限】 #{regist_max}
+
+      【Twitter】
+      ↓要望、バグなどはこちらまで↓
+      https://twitter.com/Maaya_pd
+    MES
+  end
 
   ## UNSUPPORTED
-  REPLY_MESSAGE_UNSUPPORTED_HEAD = '【案内】'.freeze
-  REPLY_MESSAGE_UNSUPPORTED_BODY_EXPLAIN = "\n\n入力された内容では何もすることができません。".freeze
-  REPLY_MESSAGE_UNSUPPORTED_BODY_PERFORM_OPERATION = "\n\n操作に困ったら「ヘルプ」を入力してください。".freeze
-  REPLY_MESSAGE_UNSUPPORTED = REPLY_MESSAGE_UNSUPPORTED_HEAD + message_build.call(/#{REG_REPLY_MESSAGE}_UNSUPPORTED_BODY/).freeze
+  REPLY_MESSAGE_UNSUPPORTED = <<~MES.chomp
+    【案内】
+
+    入力された内容では何もすることができません。
+    操作に困ったら「ヘルプ」を入力してください。
+  MES
 
   module Request
     # Request Type
@@ -81,14 +160,16 @@ module Constants
     ## Text
     ### 暫定でtextを指定する。
     TYPE_TEXT = :text
-    TYPE_TEXT_ADD_NOVEL = :add_novel
-    TYPE_TEXT_DELETE = :delete
+    TYPE_TEXT_ADD_NOVEL = :novel_add
+    TYPE_TEXT_LIST = :novel_list
+    TYPE_TEXT_DELETE = :novel_delete
     TYPE_TEXT_HELP = :help
-    TYPE_TEXT_LIST = :list
     TYPE_TEXT_INFO = :info
     TYPE_TEXT_LINE_REQUEST = :line
     TYPE_TEXT_DEBUG = :debug
-    TYPE_TEXT_NONE = :none
+
+    ## None(当てはまるものなし)
+    TYPE_NONE = :none
   end
 
   module LineMessage

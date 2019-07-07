@@ -1,4 +1,4 @@
-class AddNovel < Command
+class NovelAdd < Command
   def initialize(user_info, request_info)
     super
   end
@@ -14,17 +14,20 @@ class AddNovel < Command
     novel = Novel.build_by_ncode(ncode)
 
     if novel&.save
-      UserCheckNovel.set_entity(user.id, novel.id)
-      @message = created(novel)
       @success = true
+      @message = UserCheckNovel.link_user_to_novel(user.id, novel.id) ? already_registered(novel) : created(novel)
     else
-      @message = unprocessable_entity(novel)
+      @message = unprocessable_entity
     end
   end
 
   # Messege START ------------------------------------------- #
   def created(novel)
-    Constants::REPLY_MESSAGE_ADD_CREATE + novel.title
+    Constants.reply_success_novel_add(novel.title)
+  end
+
+  def already_registered(novel)
+    Constants.reply_already_registered_novel(novel.title)
   end
 
   def unprocessable_entity

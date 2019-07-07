@@ -1,5 +1,9 @@
 require_relative '../narou.rb'
 require_relative '../line_request/line_messenger.rb'
+require_relative '../line_request/line_message/carousel.rb'
+require_relative '../line_request/line_message/element/carousel_column.rb'
+require_relative '../line_request/line_message/element/carousel_element.rb'
+
 require 'date'
 
 module Narou::UpdateCheck extend self
@@ -37,20 +41,26 @@ module Narou::UpdateCheck extend self
     def find_update_novel_to_user(novel)
       notify_element = Struct.new(:user_line_id, :novel_url, :novel_title)
       novel_url = Narou.narou_url(novel)
-      ucns = UserCheckNovel.where(novel_id: novel.id)
-      ret = ucns.each_with_object([]) do |ucn, arr|
-        arr << notify_element.new(ucn.user.line_id, novel_url, novel.title)
-      end
+      users = User.find_effective_users_in_novel(novel.id)
 
-      ret
+      users.each_with_object([]) do |user, arr|
+        arr << notify_element.new(user.line_id, novel_url, novel.title)
+      end
     end
 
     def notify_update_novel_to_user(users_data)
       users_data.flatten!.group_by(&:user_line_id)
       .each do |user_id, items|
-        res = client.send(user_id, build_notify_data(items))
-
+        message = message_template(build_notify_data(items))
+        res = client.send(user_id, message)
+        Rails.logger.info('start')
+        Rails.logger.info(message)
+        Rails.logger.info(res.body)
       end
+    end
+
+    def client
+      @client ||= LineMessenger.new
     end
 
     def build_notify_data(items)
@@ -59,9 +69,11 @@ module Narou::UpdateCheck extend self
       items.each.with_index(1) { |item, index| message_body += "\n\n#{index}. #{item.novel_title}\n#{item.novel_url}" }
       message_title + message_body
     end
-
-    def client
-      @client ||= LineMessenger.new
+    def text_message_template(message_text)
+      {
+        type: Constants::LineMessage::MessageType::TYPE_PLANE,
+        text: message_text
+      }
     end
   end
 end
