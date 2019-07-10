@@ -4,8 +4,9 @@ class Recommend < Command
   end
 
   def call
-    user_recommend_novels = Novel.find_user_recommends
 
+    # title, ncode, synopsis
+    admin_recommend_novels = Novel.find_admin_recommends(admin_recommend_list)
   end
 
   private

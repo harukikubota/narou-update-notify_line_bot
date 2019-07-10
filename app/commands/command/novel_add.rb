@@ -21,17 +21,25 @@ class NovelAdd < Command
     end
   end
 
-  # Messege START ------------------------------------------- #
-  def created(novel)
-    Constants.reply_success_novel_add(novel.title)
+  def reply_created(novel)
+    <<~MES.chomp
+      登録しました。
+      #{novel.title}
+    MES
   end
 
-  def already_registered(novel)
-    Constants.reply_already_registered_novel(novel.title)
+  def reply_already_registered_and_delete_confirm(novel)
+    <<~MES.chomp
+    「#{novel.title}」はすでに登録されています。
+    削除しますか？
+    MES
   end
 
-  def unprocessable_entity
-    Constants::REPLY_MESSAGE_ADD_FAILURE
+  def reply_unprocessable_entity
+    <<~MES.chomp
+      登録に失敗しました。
+      しばらく時間を置いて再度お願いします。
+    MES
   end
-  # Messege END --------------------------------------------- #
 end
+

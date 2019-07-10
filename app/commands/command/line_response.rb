@@ -4,7 +4,7 @@ class LineResponse < Command
   end
 
   def call
-    @message = Constants::REPLY_MESSAGE_LINE
+    @message = 'Hello! I am NarouUpdateNotifyBot!'
     @success = true
   end
 end

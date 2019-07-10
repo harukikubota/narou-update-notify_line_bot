@@ -4,7 +4,24 @@ class Help < Command
   end
 
   def call
-    @message = Constants::REPLY_MESSAGE_HELP
+    @message = reply_help
     @success = true
+  end
+
+  def reply_help
+    <<~MES.chomp
+      【ヘルプ】
+      1. 小説の追加
+        なろうのURLを送信してください。
+
+      2. 小説の一覧
+        「一覧」を入力してください。
+
+      3. 小説の削除
+        「削除」を入力してください。
+
+      4. インフォメーション
+        「インフォメーション」を入力してください
+    MES
   end
 end
