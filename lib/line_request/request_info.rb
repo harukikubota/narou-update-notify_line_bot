@@ -62,8 +62,8 @@ class RequestInfo
       Constants::Request::TYPE_TEXT_HELP
     when Constants::REG_LIST_COMMAND
       Constants::Request::TYPE_TEXT_LIST
-    when Constants::REG_DEBUG_COMMAND
-      Rails.env != 'development' ? Constants::Request::TYPE_NONE : Constants::Request::TYPE_TEXT_DEBUG
+    #when Constants::REG_DEBUG_COMMAND
+    #  Rails.env != 'development' ? Constants::Request::TYPE_NONE : Constants::Request::TYPE_TEXT_DEBUG
     else
       Constants::Request::TYPE_NONE
     end

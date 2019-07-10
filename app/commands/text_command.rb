@@ -61,7 +61,6 @@ class TextCommand < BaseCommand
         info: 'Info',
         line: 'LineResponse',
         none: 'None',
-        debug: 'Debug',
       }
     end
   end

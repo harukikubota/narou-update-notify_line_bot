@@ -20,7 +20,7 @@ module Constants
   REG_LIST_COMMAND = /一覧|list/.freeze
   REG_DELETE_COMMAND = /削除|[Dd]elete/.freeze
   REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
-  REG_DEBUG_COMMAND = /デバッグ|で/.freeze if Rails.env == 'development'
+  #REG_DEBUG_COMMAND = /デバッグ|で/.freeze if Rails.env == 'development'
   REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
   REG_LINE_REQUEST_MESSAGE = /Hello, world/.freeze
 
