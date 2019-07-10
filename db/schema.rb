@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_05_144606) do
+ActiveRecord::Schema.define(version: 2019_07_10_133443) do
 
   create_table "novels", force: :cascade do |t|
     t.string "title", null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_07_05_144606) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enable", default: true, null: false
+    t.integer "regist_max", default: 15, null: false
   end
 
 end

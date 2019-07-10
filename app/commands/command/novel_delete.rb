@@ -5,11 +5,16 @@ class NovelDelete < TextCommand
 
   def call
     novel_id = @request_info.data.match(/[0-9]{1,4}/).to_s
-    return @success = true if novel_id == '0'
+    return self, @success = true if novel_id == '0'
 
     title = Novel.find(novel_id).title
-    delete_ucn = UserCheckNovel.where(novel_id: novel_id).first
-    @message = delete_ucn.nil? ? reply_already_deleted(title) : reply_deleted(title)
+
+    if delete_ucn = UserCheckNovel.where(novel_id: novel_id).first
+      delete_ucn.destroy
+      @message = reply_deleted(title)
+    else
+      @message = reply_already_deleted(title)
+    end
     @success = true
   end
 

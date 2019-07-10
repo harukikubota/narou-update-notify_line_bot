@@ -1,7 +1,6 @@
 module Carousel
   class << self
     def build_carousel(carousel_element)
-      binding.pry
       element = carousel_element
       columns = element.columns.each_with_object([]) { |column, arr| arr << build_column(column) }
       @alt_text = element.alt_text if element.alt_text

@@ -5,7 +5,7 @@ class Info < TextCommand
 
   def call
     regist_max = user.regist_max
-    now_regist_count = regist_max - user.novels.count
+    now_regist_count = user.novels.count
     @message = reply_info(now_regist_count, regist_max)
     @success = true
   end
