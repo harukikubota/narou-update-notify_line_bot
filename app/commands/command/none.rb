@@ -1,10 +1,10 @@
-class None < Command
+class None < TextCommand
   def initialize(user_info, request_info)
     super
   end
 
   def call
-    @message = Constants::REPLY_MESSAGE_UNSUPPORTED
+    @message = reply_none
     @success = true
   end
 

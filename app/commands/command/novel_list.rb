@@ -1,4 +1,4 @@
-class NovelList < Command
+class NovelList < TextCommand
   REPLY_MESSAGE_LIST_HEAD = '【一覧の表示】'.freeze
 
   def initialize(user_info, request_info)
@@ -7,7 +7,6 @@ class NovelList < Command
 
   def call
     @message = user.novels.count.zero? ? reply_no_item : reply_registered_list(user.novels)
-
     @success = true
   end
 

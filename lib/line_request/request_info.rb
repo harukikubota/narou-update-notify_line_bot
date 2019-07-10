@@ -14,6 +14,10 @@ class RequestInfo
     @user_info
   end
 
+  def data
+    @data
+  end
+
   def user_send_text
     @text
   end
@@ -27,6 +31,9 @@ class RequestInfo
       @type = request_type_by_text
     when Constants::Request::TYPE_FOLLOW, Constants::Request::TYPE_UNFOLLOW
       #no-op
+    when Constants::Request::TYPE_POSTBACK
+      @data = @request_data['postback']['data']
+      @type = request_type_by_postback
     end
 
     create_user_info
@@ -59,6 +66,13 @@ class RequestInfo
       Rails.env != 'development' ? Constants::Request::TYPE_NONE : Constants::Request::TYPE_TEXT_DEBUG
     else
       Constants::Request::TYPE_NONE
+    end
+  end
+
+  def request_type_by_postback
+    case @data
+    when /action=delete/
+      Constants::Request::TYPE_POSTBACK_NOVEL_DELETE
     end
   end
 end

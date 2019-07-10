@@ -29,6 +29,8 @@ class ApplicationController < ActionController::API
       event_type = Constants::Request::TYPE_FOLLOW
     when Line::Bot::Event::Unfollow
       event_type = Constants::Request::TYPE_UNFOLLOW
+    when Line::Bot::Event::Postback
+      event_type = Constants::Request::TYPE_POSTBACK
     else
       event_type = Constants::Request::TYPE_NONE
     end

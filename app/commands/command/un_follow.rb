@@ -1,4 +1,4 @@
-class UnFollow < Command
+class UnFollow < TextCommand
   def initialize(user_info, request_info)
     super
   end

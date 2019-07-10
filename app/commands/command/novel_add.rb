@@ -1,4 +1,4 @@
-class NovelAdd < Command
+class NovelAdd < TextCommand
   def initialize(user_info, request_info)
     super
   end
@@ -15,7 +15,15 @@ class NovelAdd < Command
 
     if novel&.save
       @success = true
-      @message = UserCheckNovel.link_user_to_novel(user.id, novel.id) ? already_registered(novel) : created(novel)
+
+      if UserCheckNovel.link_user_to_novel(user.id, novel.id)
+        struct = Struct.new(:text, :novel_id)
+        message = reply_already_registered_and_delete_confirm(novel)
+
+        @message = struct.new(message, novel.id)
+      else
+        @message = reply_created(novel)
+      end
     else
       @message = unprocessable_entity
     end
@@ -23,15 +31,15 @@ class NovelAdd < Command
 
   def reply_created(novel)
     <<~MES.chomp
-      登録しました。
-      #{novel.title}
+    「#{novel.title}」を登録しました。
     MES
   end
 
   def reply_already_registered_and_delete_confirm(novel)
+    @message_type = Constants::LineMessage::MessageType::TYPE_BUTTON
     <<~MES.chomp
-    「#{novel.title}」はすでに登録されています。
-    削除しますか？
+      「#{novel.title}」はすでに登録されています。
+      削除しますか？
     MES
   end
 

@@ -28,44 +28,21 @@ module Constants
   ## バッチ
   CAN_NOTIFY_TIME_RANGE = Rails.env == 'production' ? [*7..22] : [*0..23]
 
-  # 応答メッセージ
-
-  REPLY_MESSAGE_ADD_FAILURE_MAX_REGIST = <<~MES.chomp
-    "登録可能上限を超えています。
-
-    ・上限について⇨インフォメーション
-
-    ・削除について⇨削除"
-  MES
-
-  ## LIST
-  REPLY_MESSAGE_LIST_HEAD = '【一覧の表示】'.freeze
-  REPLY_MESSAGE_LIST_NO_ITEM = <<~MES.chomp
-    #{REPLY_MESSAGE_LIST_HEAD}
-
-    現在登録しているなろう小説はありません。
-  MES
-
-  def reply_list_any_item(items)
-    <<~MES.chomp
-      #{REPLY_MESSAGE_LIST_HEAD}
-
-      #{items}
-    MES
-  end
-
   module Request
     # Request Type
-    ## Follow UnFollow
     TYPE_FOLLOW = :follow
     TYPE_UNFOLLOW = :unfollow
+
+    ## Postback
+    ### 暫定版
+    TYPE_POSTBACK = :postback
+    TYPE_POSTBACK_NOVEL_DELETE = :novel_delete
 
     ## Text
     ### 暫定でtextを指定する。
     TYPE_TEXT = :text
     TYPE_TEXT_ADD_NOVEL = :novel_add
     TYPE_TEXT_LIST = :novel_list
-    TYPE_TEXT_DELETE = :novel_delete
     TYPE_TEXT_HELP = :help
     TYPE_TEXT_INFO = :info
     TYPE_TEXT_LINE_REQUEST = :line
@@ -83,6 +60,7 @@ module Constants
 
   module LineMessage::MessageType
     TYPE_PLANE = 'text'.freeze
+    TYPE_BUTTON = 'buttons'.freeze
     TYPE_CAROUSEL = 'carousel'.freeze
   end
 end

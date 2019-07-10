@@ -1,4 +1,4 @@
-class Follow < Command
+class Follow < TextCommand
   def initialize(user_info, request_info)
     super
   end

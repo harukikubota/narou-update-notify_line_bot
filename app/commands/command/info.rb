@@ -1,4 +1,4 @@
-class Info < Command
+class Info < TextCommand
   def initialize(user_info, request_info)
     super
   end

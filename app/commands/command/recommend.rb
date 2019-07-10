@@ -1,4 +1,4 @@
-class Recommend < Command
+class Recommend < TextCommand
   def initialize(user_info, request_info)
     super
   end

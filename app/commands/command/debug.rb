@@ -1,4 +1,4 @@
-class Debug < Command
+class Debug < TextCommand
   def initialize(user_info, request_info)
     super
   end

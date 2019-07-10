@@ -1,4 +1,4 @@
-class Help < Command
+class Help < TextCommand
   def initialize(user_info, request_info)
     super
   end
@@ -18,7 +18,7 @@ class Help < Command
         「一覧」を入力してください。
 
       3. 小説の削除
-        「削除」を入力してください。
+        すでに登録しているなろうのURLを送信してください。
 
       4. インフォメーション
         「インフォメーション」を入力してください

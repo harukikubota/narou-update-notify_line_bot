@@ -1,9 +1,6 @@
-require 'active_support/core_ext/class/subclasses'
+require_relative './base_command.rb'
 
-# Commandsの基底クラス
-class Command
-  NO_OVERRIDE_ERROR = 'no override error'
-  NO_COMMAND_ERROR = '該当のコマンドがありません'
+class TextCommand < BaseCommand
 
   def self.build(command_identifier, *params)
     files = Rails.root.glob('app/commands/command/*.rb')
@@ -19,25 +16,23 @@ class Command
     const_get(command_name).new(*params)
   end
 
-  # Commandの実行
-  def call
-    raise NO_OVERRIDE_ERROR
-  end
-
-  # Commandの実行結果
-  # @success = true
-  def success?
-    @success
-  end
-
   def message
     @message
+  end
+
+  def message_type
+    @message_type ||= type
   end
 
   protected
 
   def user
     @user ||= User.find_by_line_id(@user_info.line_id)
+  end
+
+  # メッセージタイプが違う場合はオーバーライドする
+  def type
+    Constants::LineMessage::MessageType::TYPE_PLANE
   end
 
   private
