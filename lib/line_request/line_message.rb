@@ -1,5 +1,5 @@
-require_relative '../line_request/line_message/plane_text.rb'
-require_relative '../line_request/line_message/carousel.rb'
+require_relative './line_message/plane_text.rb'
+require_relative './line_message/carousel.rb'
 
 # メッセージの基底クラス
 module LineMessege

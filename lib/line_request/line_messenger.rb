@@ -1,6 +1,6 @@
 require_relative './line_message'
 
-class LineMessenger
+class LineRequest::LineMessenger
 
   def initialize
     @client = Line::Bot::Client.new do |config|

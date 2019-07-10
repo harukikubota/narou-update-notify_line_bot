@@ -7,7 +7,7 @@ class ApplicationController < ActionController::API
   def proc_request
     body = request.body.read
 
-    @messenger = LineMessenger.new
+    @messenger = LineRequest::LineMessenger.new
     @message_template
     @client = @messenger.client
 

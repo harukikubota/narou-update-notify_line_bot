@@ -8,5 +8,6 @@ class CarouselElement
 
   def add_column(column)
     @columns.push(column)
+    self
   end
 end

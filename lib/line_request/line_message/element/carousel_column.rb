@@ -9,5 +9,6 @@ class CarouselColumn
 
   def add_action(action)
     @actions.push(action)
+    self
   end
 end
