@@ -5,7 +5,7 @@ class TextCommand < BaseCommand
   def self.build(command_identifier, *params)
     files = Rails.root.glob('app/commands/command/*.rb')
       .map(&:to_s)
-      .map { |file| file.split('/') }
+      .map { |file| file.split('/').uniq! }
       .map { |file| file.drop_while { |dir| !dir.include?('app') } }
       .map { |file| file.join('/').sub(/.rb/, '') }
       .map { |file| './' + file }

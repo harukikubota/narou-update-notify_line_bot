@@ -6,7 +6,7 @@ class Recommend < TextCommand
   def call
 
     # title, ncode, synopsis
-    admin_recommend_novels = Novel.find_admin_recommends(admin_recommend_list)
+    #admin_recommend_novels = Novel.find_admin_recommends(admin_recommend_list)
   end
 
   private
