@@ -5,18 +5,18 @@ class Recommend < Command
 
   def call
     user_recommend_novels = Novel.find_user_recommends
-    
+
   end
 
   private
 
   # ncode の配列を引数にメッセージを作る
   def build_message_by_ncodes(ncodes)
-    
+
   end
-  
+
   def column_action(url)
-    
+
   end
 
   # 作者おすすめのなろう小説一覧

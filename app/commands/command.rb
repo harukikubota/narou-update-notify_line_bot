@@ -6,10 +6,10 @@ class Command
   NO_COMMAND_ERROR = '該当のコマンドがありません'
 
   def self.build(command_identifier, *params)
-    files = Rails.root.glob("app/commands/command/*.rb")
+    files = Rails.root.glob('app/commands/command/*.rb')
       .map(&:to_s)
       .map { |file| file.split('/') }
-      .map { |f| f.drop_while { |dir| !dir.include?('app') } }
+      .map { |file| file.drop_while { |dir| !dir.include?('app') } }
       .map { |file| file.join('/').sub(/.rb/, '') }
       .map { |file| './' + file }
 

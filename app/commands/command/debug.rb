@@ -4,6 +4,7 @@ class Debug < Command
   end
 
   def call
-
+    @message = 'this is debug.'
+    @success = true
   end
 end
