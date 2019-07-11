@@ -6,25 +6,31 @@ require_relative '../line_request/line_message/element/carousel_element.rb'
 
 require 'date'
 
-module Narou::UpdateCheck extend self
+module Narou::UpdateCheckNewNovel extend self
 
   def batch
     now_hour = DateTime.now.hour
-    Constants::CAN_NOTIFY_TIME_RANGE.include?(now_hour) ? UpdateCheck.new.run : Rails.logger.info('実行可能時間外')
+    Constants::CAN_NOTIFY_TIME_RANGE.include?(now_hour) ? UpdateCheckNewNovel.new.run : Rails.logger.info('実行可能時間外')
   end
 
-  class UpdateCheck
+  class UpdateCheckNewNovel
     include Narou
 
     def run
-      novels = Novel.all
+      writers = Writer.all
       @something_notify_flag = false
-      notify_users_data = novels.each_with_object([]) do |novel, arr|
-        if is_exist_next_episode?(novel)
-          novel.update!(
-            last_episode_id: Narou.next_episode_id(novel.last_episode_id)
+      novel_info = Struct.new(:writer_id, :writer_name, :title, :ncode)
+
+      notify_users_data = writers.each_with_object([]) do |writer, arr|
+        if exist_new_novel?(writer)
+          novel_count, result = Narou.fetch_writer_episodes_order_new_post(writer.writer_id)
+          novels = result.take(novel_count - writer.novel_count).map { |data| novel_info.new(writer.id, writer.name, data['title'], data['ncode'].downcase) }
+
+          writer.update!(
+            novel_count: novel_count
           )
-          arr << find_update_novel_to_user(novel) && @something_notify_flag = true
+
+          arr << find_update_writer_to_user(novels) && @something_notify_flag = true
         end
       end
 
@@ -33,30 +39,29 @@ module Narou::UpdateCheck extend self
 
     private
 
-    def is_exist_next_episode?(novel)
-      _f, _, episode_id = Narou.fetch_episode(novel.ncode)
-      episode_id > novel.last_episode_id
+    def exist_new_novel?(writer)
+      count, _ = Narou.fetch_writer_episodes_order_new_post(writer.writer_id.to_s)
+      count > writer.novel_count
     end
 
-    def find_update_novel_to_user(novel)
-      notify_element = Struct.new(:user_line_id, :novel_url, :novel_title)
-      novel_url = Narou.narou_url_with_episode_id(novel)
-      users = User.find_effective_users_in_novel(novel.id)
-
-      users.each_with_object([]) do |user, arr|
-        arr << notify_element.new(user.line_id, novel_url, novel.title)
-      end
+    def find_update_writer_to_user(novels)
+      notify_element = Struct.new(:user_line_id, :writer_name, :novel_url, :novel_title)
+      novel_infos = novels.map { |novel| [novel.writer_name, Narou.narou_url(novel), novel.title] }
+      users = User.find_effective_users_in_writer(novels[0].writer_id)
+      datas = users.map(&:line_id).product(novel_infos)
+      datas.each_with_object([]) { |data, arr| arr << notify_element.new(*data.flatten!) }
     end
 
     # TODO 更新が６件以上の時エラーになるので変更する
     def notify_update_novel_to_user(users_data)
+      binding.pry
       users_data.flatten!.group_by(&:user_line_id)
       .each do |user_id, items|
         message_title = build_notify_data(items)
         carousel_ele = carousel_message_template(message_title)
         items.each do |item|
           carousel_ele.add_column(
-            column(item.novel_title)
+            column(item.writer_name, item.novel_title)
               .add_action(action(item.novel_url))
           )
         end
@@ -82,7 +87,7 @@ module Narou::UpdateCheck extend self
     #end
 
     def build_notify_data(items)
-      "#{items.count}件の更新がありました。"
+      "#{items.count}件の新規投稿がありました。"
     end
 
     def text_message_template(message_text)

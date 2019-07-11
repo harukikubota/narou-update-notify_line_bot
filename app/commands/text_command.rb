@@ -5,7 +5,7 @@ class TextCommand < BaseCommand
   def self.build(command_identifier, *params)
     files = Rails.root.glob('app/commands/command/*.rb')
       .map(&:to_s)
-      .map { |file| file.split('/').uniq! }
+      .map { |file| file.split('/').uniq }
       .map { |file| file.drop_while { |dir| !dir.include?('app') } }
       .map { |file| file.join('/').sub(/.rb/, '') }
       .map { |file| './' + file }
@@ -57,6 +57,7 @@ class TextCommand < BaseCommand
         novel_add: 'NovelAdd',
         novel_list: 'NovelList',
         novel_delete: 'NovelDelete',
+        writer_add: 'WriterAdd',
         help: 'Help',
         info: 'Info',
         line: 'LineResponse',

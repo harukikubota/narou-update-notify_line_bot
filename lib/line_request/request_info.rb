@@ -54,14 +54,14 @@ class RequestInfo
       Constants::Request::TYPE_TEXT_LINE_REQUEST
     when Constants::REG_NAROU_URL
       Constants::Request::TYPE_TEXT_ADD_NOVEL
-    when Constants::REG_DELETE_COMMAND
-      Constants::Request::TYPE_TEXT_DELETE
+    when Constants::REG_NAROU_MYPAGE_URL
+      Constants::Request::TYPE_TEXT_ADD_WRITER
     when Constants::REG_INFO_COMMAND
       Constants::Request::TYPE_TEXT_INFO
     when Constants::REG_HELP_COMMAND
       Constants::Request::TYPE_TEXT_HELP
     when Constants::REG_LIST_COMMAND
-      Constants::Request::TYPE_TEXT_LIST
+      Constants::Request::TYPE_TEXT_LIST_NOVEL
     #when Constants::REG_DEBUG_COMMAND
     #  Rails.env != 'development' ? Constants::Request::TYPE_NONE : Constants::Request::TYPE_TEXT_DEBUG
     else
