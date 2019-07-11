@@ -23,8 +23,8 @@ module Constants
   REG_NAROU_URL = %r{(http|https)://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
   REG_NAROU_MYPAGE_URL = %r{(http|https)://#{BASE_NAROU_MYPAGE_URL}#{REG_WRITER_ID}/}.freeze
   REG_HELP_COMMAND = /help|ヘルプ|へるぷ|Help|HELP/.freeze
-  REG_LIST_COMMAND = /一覧|list/.freeze
-  REG_DELETE_COMMAND = /削除|[Dd]elete/.freeze
+  REG_NOVEL_LIST_COMMAND = /小説一覧|list/.freeze
+  REG_WRITER_LIST_COMMAND = /作者一覧/.freeze
   REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
   #REG_DEBUG_COMMAND = /デバッグ|で/.freeze if Rails.env == 'development'
   REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
@@ -50,6 +50,7 @@ module Constants
     TYPE_TEXT_ADD_NOVEL = :novel_add
     TYPE_TEXT_LIST_NOVEL = :novel_list
     TYPE_TEXT_ADD_WRITER = :writer_add
+    TYPE_TEXT_LIST_WRITER = :writer_list
     TYPE_TEXT_HELP = :help
     TYPE_TEXT_INFO = :info
     TYPE_TEXT_LINE_REQUEST = :line
