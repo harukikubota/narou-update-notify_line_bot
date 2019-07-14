@@ -48,7 +48,7 @@ module Narou::UpdateCheck extend self
       end
     end
 
-    # TODO 更新が６件以上の時エラーになるので変更する
+    # TODO 更新が11件以上の時エラーになるので変更する
     def notify_update_novel_to_user(users_data)
       users_data.flatten!.group_by(&:user_line_id)
       .each do |user_id, items|
@@ -63,23 +63,13 @@ module Narou::UpdateCheck extend self
 
         message = Carousel.build_carousel(carousel_ele)
 
-        res = client.send(user_id, message)
-        Rails.logger.info('start')
-        Rails.logger.info(message)
-        Rails.logger.info(res.body)
+        client.send(user_id, message)
       end
     end
 
     def client
       @client ||= LineRequest::LineMessenger.new
     end
-
-    #def build_notify_data(items)
-    #  message_title = "#{items.count}件の更新がありました。"
-    #  message_body = ""
-    #  items.each.with_index(1) { |item, index| message_body += "\n\n##{index}. #{item.novel_title}\n#{item.novel_url}" }
-    #  message_title + message_body
-    #end
 
     def build_notify_data(items)
       "#{items.count}件の更新がありました。"

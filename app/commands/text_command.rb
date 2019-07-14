@@ -59,8 +59,10 @@ class TextCommand < BaseCommand
         novel_delete: 'NovelDelete',
         writer_add: 'WriterAdd',
         writer_list: 'WriterList',
+        writer_delete: 'WriterDelete',
         help: 'Help',
         info: 'Info',
+        separator: 'Separator',
         line: 'LineResponse',
         none: 'None',
       }

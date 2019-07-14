@@ -60,6 +60,8 @@ class RequestInfo
       Constants::Request::TYPE_TEXT_INFO
     when Constants::REG_HELP_COMMAND
       Constants::Request::TYPE_TEXT_HELP
+    when Constants::REG_SEPARATOR_COMMAND
+      Constants::Request::TYPE_TEXT_SEP
     when Constants::REG_NOVEL_LIST_COMMAND
       Constants::Request::TYPE_TEXT_LIST_NOVEL
     when Constants::REG_WRITER_LIST_COMMAND
@@ -73,8 +75,10 @@ class RequestInfo
 
   def request_type_by_postback
     case @data
-    when /action=delete/
+    when /action=novel_delete/
       Constants::Request::TYPE_POSTBACK_NOVEL_DELETE
+    when /action=writer_delete/
+      Constants::Request::TYPE_POSTBACK_WRITER_DELETE
     end
   end
 end

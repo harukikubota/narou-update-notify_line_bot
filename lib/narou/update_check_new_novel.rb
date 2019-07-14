@@ -54,7 +54,6 @@ module Narou::UpdateCheckNewNovel extend self
 
     # TODO 更新が６件以上の時エラーになるので変更する
     def notify_update_novel_to_user(users_data)
-      binding.pry
       users_data.flatten!.group_by(&:user_line_id)
       .each do |user_id, items|
         message_title = build_notify_data(items)

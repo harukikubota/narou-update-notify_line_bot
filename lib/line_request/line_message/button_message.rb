@@ -1,29 +1,29 @@
 module ButtonMessage
-  def build_by_button_message(message)
-    button_template(message)
+  def build_by_button_message(button_element)
+    @alt_text = button_element.alt_text
+    @message_text = button_element.text
+    @actions = button_element.actions
+    button_template
   end
 
   private
 
-  def button_template(message)
+  def type
+    Constants::LineMessage::MessageType::TYPE_BUTTON
+  end
+
+  def alt_text
+    @alt_text ||= 'this is carousel message.'
+  end
+
+  def button_template
     {
       type: 'template',
-      altText: '登録の削除',
+      altText: alt_text,
       template: {
-        type: 'buttons',
-        text: message.text,
-        actions: [
-          {
-            type: 'postback',
-            label: '削除する',
-            data: "action=delete&novel_id=#{message.novel_id}"
-          },
-          {
-            type: 'postback',
-            label: '削除しない',
-            data: 'action=delete&novel_id=0'
-          }
-        ]
+        type: type,
+        text: @message_text,
+        actions: @actions
       }
     }
   end

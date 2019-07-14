@@ -26,6 +26,7 @@ module Constants
   REG_NOVEL_LIST_COMMAND = /小説一覧|list/.freeze
   REG_WRITER_LIST_COMMAND = /作者一覧/.freeze
   REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
+  REG_SEPARATOR_COMMAND = /区切|[SEP|sep]/.freeze
   #REG_DEBUG_COMMAND = /デバッグ|で/.freeze if Rails.env == 'development'
   REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
   REG_LINE_REQUEST_MESSAGE = /Hello, world/.freeze
@@ -43,6 +44,7 @@ module Constants
     ### 暫定版
     TYPE_POSTBACK = :postback
     TYPE_POSTBACK_NOVEL_DELETE = :novel_delete
+    TYPE_POSTBACK_WRITER_DELETE = :writer_delete
 
     ## Text
     ### 暫定でtextを指定する。
@@ -53,6 +55,7 @@ module Constants
     TYPE_TEXT_LIST_WRITER = :writer_list
     TYPE_TEXT_HELP = :help
     TYPE_TEXT_INFO = :info
+    TYPE_TEXT_SEP = :separator
     TYPE_TEXT_LINE_REQUEST = :line
     TYPE_TEXT_DEBUG = :debug
 

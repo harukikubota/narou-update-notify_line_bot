@@ -32,6 +32,6 @@ class BaseCommand
   private
 
   def snake_case_to(str)
-    str.split('_').map(&:downcase).join('_')
+    str.downcase
   end
 end

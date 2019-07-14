@@ -30,7 +30,7 @@ class WriterList < TextCommand
     MES
   end
 
-  def name_list_with_row(index, name)
+  def name_list_with_index(index, name)
     "\n\n#{index}. #{name}"
   end
 end

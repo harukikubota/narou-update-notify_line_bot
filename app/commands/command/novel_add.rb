@@ -1,3 +1,5 @@
+require_relative '../../../lib/line_request/line_message/element/button_element.rb'
+
 class NovelAdd < TextCommand
   def initialize(user_info, request_info)
     super
@@ -18,14 +20,7 @@ class NovelAdd < TextCommand
     if novel&.save
       @success = true
 
-      if UserCheckNovel.link_user_to_novel(user.id, novel.id)
-        struct = Struct.new(:text, :novel_id)
-        message = reply_already_registered_and_delete_confirm(novel)
-
-        @message = struct.new(message, novel.id)
-      else
-        @message = reply_created(novel)
-      end
+      @message = link_user_to_novel(user.id, novel.id) ? reply_already_registered(novel) : reply_created(novel)
     else
       @message = unprocessable_entity
     end
@@ -36,9 +31,12 @@ class NovelAdd < TextCommand
     @success = true
   end
 
-  # TODO 定数切る
   def is_regist_limit_over?
-    UserCheckNovel.where(user_id: user.id).count == 15
+    UserCheckNovel.where(user_id: user.id).count == user.regist_max
+  end
+
+  def link_user_to_novel(user_id, novel_id)
+    UserCheckNovel.link_user_to_novel(user_id, novel_id)
   end
 
   def reply_created(novel)
@@ -47,12 +45,18 @@ class NovelAdd < TextCommand
     MES
   end
 
-  def reply_already_registered_and_delete_confirm(novel)
+  def reply_already_registered(novel)
     @message_type = Constants::LineMessage::MessageType::TYPE_BUTTON
-    <<~MES.chomp
+    message =<<~MES.chomp
       「#{novel.title}」はすでに登録されています。
       削除しますか？
     MES
+
+    button_ele = ButtonElement.new(message, nil, '小説の削除確認')
+    @message = button_ele
+      .add_action(button_action_do_delete(novel.id))
+      .add_action(button_action_no_delete)
+
   end
 
   def reply_unprocessable_entity
@@ -68,6 +72,22 @@ class NovelAdd < TextCommand
 
       新しく追加するには登録を削除してください。
     MES
+  end
+
+  def button_action_do_delete(novel_id)
+    {
+      type: 'postback',
+      label: '削除する',
+      data: "action=novel_delete&novel_id=#{novel_id}"
+    }
+  end
+
+  def button_action_no_delete
+    {
+      type: 'postback',
+      label: '削除しない',
+      data: 'action=novel_delete&novel_id=0'
+    }
   end
 end
 

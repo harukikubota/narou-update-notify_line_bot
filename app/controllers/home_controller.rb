@@ -45,7 +45,6 @@ class HomeController < ApplicationController
       LineMessage.build_by_single_message(message)
     when Constants::LineMessage::MessageType::TYPE_BUTTON
       LineMessage.build_by_button_message(message)
-    # TODO どうするか考える
     when Constants::LineMessage::MessageType::TYPE_CAROUSEL
       LineMessage.build_by_carousel
     end

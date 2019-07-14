@@ -18,17 +18,14 @@ class WriterAdd < TextCommand
     if writer&.save
       @success = true
 
-      if UserCheckWriter.link_user_to_writer(user.id, writer.id)
-        struct = Struct.new(:text, :writer_id)
-        message = reply_already_registered_and_delete_confirm(writer)
-
-        @message = struct.new(message, writer.id)
-      else
-        @message = reply_created(writer)
-      end
+      @message = link_user_to_writer(user.id, writer.id) ? reply_already_registered(writer) : reply_created(writer)
     else
       @message = unprocessable_entity
     end
+  end
+
+  def link_user_to_writer(user_id, writer_id)
+    UserCheckWriter.link_user_to_writer(user_id, writer_id)
   end
 
   def regist_limit_over
@@ -36,23 +33,27 @@ class WriterAdd < TextCommand
     @success = true
   end
 
-  # TODO 定数切る
   def is_regist_limit_over?
-    UserCheckWriter.where(user_id: user.id).count == 15
+    UserCheckWriter.where(user_id: user.id).count == user.regist_max
   end
 
   def reply_created(writer)
     <<~MES.chomp
-      「#{writer.name}」さんの新規投稿監視を登録しました。
+      「#{writer.name}」の新規投稿監視を登録しました。
     MES
   end
 
-  def reply_already_registered_and_delete_confirm(writer)
+  def reply_already_registered(writer)
     @message_type = Constants::LineMessage::MessageType::TYPE_BUTTON
-    <<~MES.chomp
-      「#{writer.name}」さんの新規投稿監視ははすでに登録されています。
+    message = <<~MES.chomp
+      「#{writer.name}」の新規投稿監視はすでに登録されています。
       削除しますか？
     MES
+
+    button_ele = ButtonElement.new(message, nil, '作者の削除確認')
+    @message = button_ele
+      .add_action(button_action_do_delete(writer.id))
+      .add_action(button_action_no_delete)
   end
 
   def reply_unprocessable_entity
@@ -68,6 +69,22 @@ class WriterAdd < TextCommand
 
       新しく追加するには新規投稿監視の登録を削除してください。
     MES
+  end
+
+  def button_action_do_delete(writer_id)
+    {
+      type: 'postback',
+      label: '削除する',
+      data: "action=writer_delete&writer_id=#{writer_id}"
+    }
+  end
+
+  def button_action_no_delete
+    {
+      type: 'postback',
+      label: '削除しない',
+      data: 'action=writer_delete&writer_id=0'
+    }
   end
 end
 
