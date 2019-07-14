@@ -7,6 +7,7 @@ module Constants
   NAROU_NOVEL_URL = "https://#{BASE_NAROU_URL}".freeze
   NAROU_MYPAGE_URL = "https://#{BASE_NAROU_MYPAGE_URL}"
   NAROU_API_URL = 'https://api.syosetu.com/novelapi/api/'.freeze
+  QUERY_DEFAULT_BROWSER = '?openExternalBrowser=1'.freeze
 
   # NAROU API
   ## ncode を指定する

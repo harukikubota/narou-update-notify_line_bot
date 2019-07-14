@@ -40,7 +40,7 @@ module Narou::UpdateCheck extend self
 
     def find_update_novel_to_user(novel)
       notify_element = Struct.new(:user_line_id, :novel_url, :novel_title)
-      novel_url = Narou.narou_url_with_episode_id(novel)
+      novel_url = Narou.narou_url_with_episode_id(novel) + Constants::QUERY_DEFAULT_BROWSER
       users = User.find_effective_users_in_novel(novel.id)
 
       users.each_with_object([]) do |user, arr|

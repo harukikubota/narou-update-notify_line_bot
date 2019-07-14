@@ -46,7 +46,7 @@ module Narou::UpdateCheckNewNovel extend self
 
     def find_update_writer_to_user(novels)
       notify_element = Struct.new(:user_line_id, :writer_name, :novel_url, :novel_title)
-      novel_infos = novels.map { |novel| [novel.writer_name, Narou.narou_url(novel), novel.title] }
+      novel_infos = novels.map { |novel| [novel.writer_name, Narou.narou_url(novel) + Constants::QUERY_DEFAULT_BROWSER, novel.title] }
       users = User.find_effective_users_in_writer(novels[0].writer_id)
       datas = users.map(&:line_id).product(novel_infos)
       datas.each_with_object([]) { |data, arr| arr << notify_element.new(*data.flatten!) }
