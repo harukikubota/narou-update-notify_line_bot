@@ -21,20 +21,27 @@ module Constants
   # REGEXP
   REG_NCODE = /n[0-9]{4}[a-z]{1,2}/.freeze
   REG_WRITER_ID = /[0-9]{1,7}/.freeze
-  REG_NAROU_URL = %r{(http|https)://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
-  REG_NAROU_MYPAGE_URL = %r{(http|https)://#{BASE_NAROU_MYPAGE_URL}#{REG_WRITER_ID}/}.freeze
-  REG_HELP_COMMAND = /help|ヘルプ|へるぷ|Help|HELP/.freeze
-  REG_NOVEL_LIST_COMMAND = /小説一覧|list/.freeze
-  REG_WRITER_LIST_COMMAND = /作者一覧/.freeze
-  REG_INFO_COMMAND = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
-  REG_SEPARATOR_COMMAND = /区切|[SEP|sep]/.freeze
-  #REG_DEBUG_COMMAND = /デバッグ|で/.freeze if Rails.env == 'development'
-  REG_REPLY_MESSAGE = /REPLY_MESSAGE/.freeze
-  REG_LINE_REQUEST_MESSAGE = /Hello, world/.freeze
+  REG_PROTOCOL = /(http[s]{0,1})/.freeze
 
   # 運用
   ## バッチ
   CAN_NOTIFY_TIME_RANGE = Rails.env == 'production' ? [*7..22] : [*0..23]
+
+  # テキストの送信に対して、タイプを判定するために使用する。
+  #
+  # 定数名から呼び出すファイルを決めるため、注意する。
+  # HOGE => app/commands/text_command/hoge.rb
+  #
+  module TextRegexp
+    NOVEL_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
+    NOVEL_LIST = /小説一覧/.freeze
+    WRITER_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_MYPAGE_URL}#{REG_WRITER_ID}/}.freeze
+    WRITER_LIST = /作者一覧/.freeze
+    HELP = /help|ヘルプ|へるぷ|Help|HELP/.freeze
+    INFO = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
+    SEPARATOR = /区切/.freeze
+    LINE_REQUEST = /Hello, world/.freeze
+  end
 
   module Request
     # Request Type
