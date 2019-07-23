@@ -1,23 +1,24 @@
+require_relative '../../../lib/line_request/line_message/element/button_element.rb'
+
 class WriterAdd < TextCommand
   def initialize(request_info)
     super
   end
 
   def call
-    writer_id = @request_info.user_send_text.match(Constants::REG_WRITER_ID).to_s
+    writer_id = @request_info.data.user_send_text.match(Constants::REG_WRITER_ID).to_s
     add_writer(writer_id)
   end
 
   private
 
   def add_writer(writer_id)
-    return self, regist_limit_over if is_regist_limit_over?
+    @success = true
+    return self && regist_limit_over if is_regist_limit_over?
 
     writer = Writer.build_by_writer_id(writer_id)
 
     if writer&.save
-      @success = true
-
       @message = link_user_to_writer(user.id, writer.id) ? reply_already_registered(writer) : reply_created(writer)
     else
       @message = unprocessable_entity
@@ -29,8 +30,7 @@ class WriterAdd < TextCommand
   end
 
   def regist_limit_over
-    @message = reply_regist_limit_over
-    @success = true
+    @message = LineMessage.build_by_single_message(reply_regist_limit_over)
   end
 
   def is_regist_limit_over?
@@ -38,37 +38,38 @@ class WriterAdd < TextCommand
   end
 
   def reply_created(writer)
-    <<~MES.chomp
-      「#{writer.name}」の新規投稿監視を登録しました。
-    MES
+    @message = LineMessage.build_by_single_message("「#{writer.name}」の新規投稿監視を登録しました。")
   end
 
   def reply_already_registered(writer)
-    @message_type = Constants::LineMessage::MessageType::TYPE_BUTTON
-    message = <<~MES.chomp
+    message_body = <<~MES.chomp
       「#{writer.name}」の新規投稿監視はすでに登録されています。
       削除しますか？
     MES
 
     button_ele = ButtonElement.new(message, nil, '作者の削除確認')
-    @message = button_ele
+    message = button_ele
       .add_action(button_action_do_delete(writer.id))
       .add_action(button_action_no_delete)
+
+    LineMessage.build_by_button_message(message)
   end
 
   def reply_unprocessable_entity
-    <<~MES.chomp
+    message = <<~MES.chomp
       登録に失敗しました。
       しばらく時間を置いて再度お願いします。
     MES
+    LineMessage.build_by_single_message(message)
   end
 
   def reply_regist_limit_over
-    <<~MES.chomp
+    message = <<~MES.chomp
       登録上限の#{user.regist_max}件を超えています。
 
       新しく追加するには新規投稿監視の登録を削除してください。
     MES
+    MESLineMessage.build_by_single_message(message)
   end
 
   def button_action_do_delete(writer_id)
