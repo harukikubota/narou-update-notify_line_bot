@@ -5,78 +5,66 @@
   },
   "selected": false,
   "name": "top-menu--default",
-  "chatBarText": "メニュー",
+  "chatBarText": "トップメニュー",
   "areas": [
     {
       "bounds": {
         "x": 0,
         "y": 0,
         "width": 833,
-        "height": 843
+        "height": 1686
       },
       "action": {
         "type": "postback",
-        "data": "action=mock&id=1"
+        "data": "action=menu&name=top-menu__list"
       }
     },
     {
       "bounds": {
-        "x": 0,
-        "y": 833,
-        "width": 833,
-        "height": 843
-      },
-      "action": {
-        "type": "postback",
-        "data": "action=mock&id=2"
-      }
-    },
-    {
-      "bounds": {
-        "x": 0,
-        "y": 1666,
-        "width": 834,
-        "height": 843
-      },
-      "action": {
-        "type": "postback",
-        "data": "action=mock&id=3"
-      }
-    },
-    {
-      "bounds": {
-        "x": 843,
+        "x": 833,
         "y": 0,
         "width": 833,
         "height": 843
       },
       "action": {
         "type": "postback",
-        "data": "action=mock&id=4"
+        "data": "action=separator"
       }
     },
     {
       "bounds": {
-        "x": 843,
-        "y": 833,
-        "width": 833,
-        "height": 843
-      },
-      "action": {
-        "type": "postback",
-        "data": "action=mock&id=5"
-      }
-    },
-    {
-      "bounds": {
-        "x": 843,
-        "y": 1666,
+        "x": 1666,
+        "y": 0,
         "width": 834,
         "height": 843
       },
       "action": {
         "type": "postback",
-        "data": "action=mock&id=6"
+        "data": "action=menu&name=top-menu__info"
+      }
+    },
+    {
+      "bounds": {
+        "x": 833,
+        "y": 843,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=menu&name=top-menu__config"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1666,
+        "y": 843,
+        "width": 834,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=menu&name=top-menu__help"
       }
     }
   ]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_11_125234) do
+ActiveRecord::Schema.define(version: 2019_07_23_195820) do
 
   create_table "novels", force: :cascade do |t|
     t.string "title", null: false
@@ -18,6 +18,17 @@ ActiveRecord::Schema.define(version: 2019_07_11_125234) do
     t.integer "last_episode_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "rich_menus", force: :cascade do |t|
+    t.string "rich_menu_id", null: false
+    t.string "name", null: false
+    t.string "menu_attribute", default: "default", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["menu_attribute"], name: "index_rich_menus_on_menu_attribute", unique: true
+    t.index ["name"], name: "index_rich_menus_on_name", unique: true
+    t.index ["rich_menu_id"], name: "index_rich_menus_on_rich_menu_id", unique: true
   end
 
   create_table "user_check_novels", force: :cascade do |t|

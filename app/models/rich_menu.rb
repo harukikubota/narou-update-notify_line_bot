@@ -1,0 +1,2 @@
+class RichMenu < ApplicationRecord
+end

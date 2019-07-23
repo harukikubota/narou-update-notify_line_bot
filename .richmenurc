@@ -1,0 +1,4 @@
+# source .richmenurc
+echo 'press Command + V !!'
+echo "load './lib/line_rich_menu/rich_menu.rb'" | pbcopy
+rails c
