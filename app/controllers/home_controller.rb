@@ -22,11 +22,15 @@ class HomeController < ApplicationController
 
     request_info = LineRequest::RequestInfo.new(event_type, event)
 
-    command = CommandFactory.get_command_class(request_info.type)
-    command.new(request_info)
+    command = CommandFactory.get_command(request_info)
     command.call
 
     if command.success?
+      res = client.reply_message(request_info.user_info.reply_token, command.message)
+      if res.code != '200'
+        logger.error(res.body)
+        head :bad_request
+      end
       head :ok
     else
       logger.error('処理失敗')

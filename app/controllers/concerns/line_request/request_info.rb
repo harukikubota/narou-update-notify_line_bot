@@ -9,7 +9,7 @@ require_relative './request_info/none_request_info.rb'
 #          [request_data] イベント
 #
 class LineRequest::RequestInfo
-  attr_reader :data, :user_info
+  attr_reader :type, :data, :user_info, :identifier
 
   def initialize(type, request_data)
     @type = type
@@ -19,18 +19,20 @@ class LineRequest::RequestInfo
   private
 
   def create_request_info(data)
-    case @type
-    when Constants::Request::TYPE_TEXT
-      @data = TextRequestInfo.new(data)
-    when Constants::Request::TYPE_FOLLOW, Constants::Request::TYPE_UNFOLLOW
-      @data = FollowRequestInfo.new(data)
-    when Constants::Request::TYPE_POSTBACK
-      @data = PostbackRequestInfo.new(data)
-    when Constants::Request::TYPE_NONE
-      @data = NoneRequestInfo.new(data)
-    end
+    @data = case @type
+            when Constants::Request::TYPE_TEXT
+              LineRequest::TextRequestInfo.new(data)
+            when Constants::Request::TYPE_FOLLOW, Constants::Request::TYPE_UNFOLLOW
+              @type = :follow
+              LineRequest::FollowRequestInfo.new(data)
+            when Constants::Request::TYPE_POSTBACK
+              LineRequest::PostbackRequestInfo.new(data)
+            when Constants::Request::TYPE_NONE
+              LineRequest::NoneRequestInfo.new(data)
+            end
 
     create_user_info(data)
+    @identifier = @data.identifier
   end
 
   def create_user_info(data)

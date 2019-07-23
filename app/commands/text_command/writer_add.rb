@@ -1,5 +1,5 @@
 class WriterAdd < TextCommand
-  def initialize(user_info, request_info)
+  def initialize(request_info)
     super
   end
 

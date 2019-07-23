@@ -1,5 +1,5 @@
-class UnFollow < TextCommand
-  def initialize(user_info, request_info)
+class Unfollow < FollowCommand
+  def initialize(request_info)
     super
   end
 

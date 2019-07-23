@@ -1,34 +1,32 @@
 require_relative '../../../lib/line_request/line_message/element/button_element.rb'
 
 class NovelAdd < TextCommand
-  def initialize(user_info, request_info)
+  def initialize(request_info)
     super
   end
 
   def call
-    ncode = @request_info.user_send_text.match(Constants::REG_NCODE).to_s
+    ncode = @request_info.data.user_send_text.match(Constants::REG_NCODE).to_s
     add_novel(ncode)
   end
 
   private
 
   def add_novel(ncode)
-    return self, regist_limit_over if is_regist_limit_over?
+    @success = true
+    return self && regist_limit_over if is_regist_limit_over?
 
     novel = Novel.build_by_ncode(ncode)
 
     if novel&.save
-      @success = true
-
       @message = link_user_to_novel(user.id, novel.id) ? reply_already_registered(novel) : reply_created(novel)
     else
-      @message = unprocessable_entity
+      @message = reply_unprocessable_entity
     end
   end
 
   def regist_limit_over
-    @message = reply_regist_limit_over
-    @success = true
+    @message = LineMessage.build_by_single_message(reply_regist_limit_over)
   end
 
   def is_regist_limit_over?
@@ -40,34 +38,33 @@ class NovelAdd < TextCommand
   end
 
   def reply_created(novel)
-    <<~MES.chomp
-      「#{novel.title}」を登録しました。
-    MES
+    @message = LineMessage.build_by_single_message("「#{novel.title}」を登録しました。")
   end
 
   def reply_already_registered(novel)
-    @message_type = Constants::LineMessage::MessageType::TYPE_BUTTON
-    message =<<~MES.chomp
+    message_body = <<~MES.chomp
       「#{novel.title}」はすでに登録されています。
       削除しますか？
     MES
 
-    button_ele = ButtonElement.new(message, nil, '小説の削除確認')
-    @message = button_ele
+    button_ele = ButtonElement.new(message_body, nil, '小説の削除確認')
+    message = button_ele
       .add_action(button_action_do_delete(novel.id))
       .add_action(button_action_no_delete)
 
+    LineMessage.build_by_button_message(message)
   end
 
   def reply_unprocessable_entity
-    <<~MES.chomp
+    message = <<~MES.chomp
       登録に失敗しました。
       しばらく時間を置いて再度お願いします。
     MES
+    LineMessage.build_by_single_message(message)
   end
 
   def reply_regist_limit_over
-    <<~MES.chomp
+    message = <<~MES.chomp
       登録上限の#{user.regist_max}件を超えています。
 
       新しく追加するには登録を削除してください。

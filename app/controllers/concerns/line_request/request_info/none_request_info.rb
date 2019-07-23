@@ -1,6 +1,8 @@
-class NoneRequestInfo
-
-  # 現状何も必要ないので処理なし
-  def initialize(_data)
+module LineRequest
+  class NoneRequestInfo
+    attr_reader :identifier
+    def initialize(_request_info)
+      @identifier = 'NONE'
+    end
   end
 end

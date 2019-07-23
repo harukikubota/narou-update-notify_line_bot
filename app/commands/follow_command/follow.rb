@@ -1,5 +1,5 @@
-class Follow < TextCommand
-  def initialize(user_info, request_info)
+class Follow < FollowCommand
+  def initialize(request_info)
     super
   end
 
@@ -7,12 +7,12 @@ class Follow < TextCommand
     # すでに友達登録済？
     if user
       user.enable_to_user
-      @message = reply_unblock
+      @message = LineMessage.build_by_single_message(reply_unblock)
     else
       User.create(
         line_id: @user_info.line_id
       )
-      @message = reply_add_friend
+      @message = LineMessage.build_by_single_message(reply_add_friend)
     end
     @success = true
   end
