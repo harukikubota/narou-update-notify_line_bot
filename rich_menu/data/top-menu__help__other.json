@@ -1,0 +1,59 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 843
+  },
+  "selected": false,
+  "name": "top-menu__help__",
+  "chatBarText": "ヘルプ-その他メニュー",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=menu&name=top-menu__help"
+      }
+    },
+    {
+      "bounds": {
+        "x": 625,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=help&name=separator"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1250,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=help&name=infomartion"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1875,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=help&name=config"
+      }
+    }
+  ]
+}

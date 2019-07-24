@@ -10,10 +10,15 @@ def list
   nil
 end
 
-def create_rich_menu(rich_menu_obj, name, attribute)
-  res = client.create_rich_menu(rich_menu_obj)
+def create_rich_menu(rich_menu_obj_name, image_name, attribute)
+  json_obj = to_json_obj_rich_menu(rich_menu_obj_name)
+  img_obj = to_image_obj_rich_menu(image_name)
+  name = File.basename(rich_menu_obj_name, '.*')
+
+  res = client.create_rich_menu(json_obj)
   rich_menu_id = res.body.scan(/(richmenu-\w+)/)[0][0]
   create(rich_menu_id, name, attribute)
+  client.create_rich_menu_image(rich_menu_id, img_obj)
 end
 
 def to_json_obj_rich_menu(json_file_name)
@@ -29,11 +34,15 @@ def client
 end
 
 def create(rich_menu_id, name, attribute)
-  RichMenu.create(
-    rich_menu_id: rich_menu_id,
-    name: name,
-    menu_attribute: attribute
-  )
+  if menu = RichMenu.find_by_name(name)
+    menu.update(rich_menu_id: rich_menu_id)
+  else
+    RichMenu.create(
+      rich_menu_id: rich_menu_id,
+      name: name,
+      menu_attribute: attribute
+    )
+  end
 end
 
 def data_path
