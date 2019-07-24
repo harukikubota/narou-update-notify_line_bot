@@ -14,27 +14,27 @@ class WriterAdd < TextCommand
 
   def add_writer(writer_id)
     @success = true
-    return self && regist_limit_over if is_regist_limit_over?
+    return self && regist_limit_over if regist_limit_over?
 
     writer = Writer.build_by_writer_id(writer_id)
-
-    if writer&.save
-      @message = link_user_to_writer(user.id, writer.id) ? reply_already_registered(writer) : reply_created(writer)
-    else
-      @message = unprocessable_entity
-    end
+    @message =
+      if writer&.save
+        link_u_to_w(user.id, writer.id) ? reply_already_registered(writer) : reply_created(writer)
+      else
+        unprocessable_entity
+      end
   end
 
-  def link_user_to_writer(user_id, writer_id)
+  def link_u_to_w(user_id, writer_id)
     UserCheckWriter.link_user_to_writer(user_id, writer_id)
+  end
+
+  def regist_limit_over?
+    UserCheckWriter.where(user_id: user.id).count == user.regist_max
   end
 
   def regist_limit_over
     @message = LineMessage.build_by_single_message(reply_regist_limit_over)
-  end
-
-  def is_regist_limit_over?
-    UserCheckWriter.where(user_id: user.id).count == user.regist_max
   end
 
   def reply_created(writer)

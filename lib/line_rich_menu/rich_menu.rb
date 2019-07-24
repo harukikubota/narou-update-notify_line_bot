@@ -1,6 +1,6 @@
 require 'line/bot'
 require 'json'
-require_relative '../line_request/line_messenger.rb'
+require_relative '../line_request/line_client.rb'
 
 def list
   res = client.get_rich_menus
@@ -25,7 +25,7 @@ def to_image_obj_rich_menu(image_name)
 end
 
 def client
-  @client ||= LineMessenger.new.client
+  @client ||= LineClient.new.client
 end
 
 def create(rich_menu_id, name, attribute)

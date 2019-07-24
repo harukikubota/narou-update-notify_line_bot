@@ -9,6 +9,7 @@ class BaseCommand
   COMMANDS_PAHT = './app/commands/'
 
   include MessageBuilder
+  include Client
 
   def call
     raise NO_OVERRIDE_ERROR

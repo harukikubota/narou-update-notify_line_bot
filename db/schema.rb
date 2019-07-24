@@ -26,7 +26,6 @@ ActiveRecord::Schema.define(version: 2019_07_23_195820) do
     t.string "menu_attribute", default: "default", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["menu_attribute"], name: "index_rich_menus_on_menu_attribute", unique: true
     t.index ["name"], name: "index_rich_menus_on_name", unique: true
     t.index ["rich_menu_id"], name: "index_rich_menus_on_rich_menu_id", unique: true
   end

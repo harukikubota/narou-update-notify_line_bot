@@ -1,4 +1,4 @@
-require_relative '../../../lib/line_request/line_messenger.rb'
+require_relative '../../../lib/line_request/line_client.rb'
 
 module LineRequest
   extend ActiveSupport::Concern
@@ -24,6 +24,6 @@ module LineRequest
   end
 
   def client
-    @client ||= LineMessenger.new.client
+    @client ||= LineClient.new.client
   end
 end

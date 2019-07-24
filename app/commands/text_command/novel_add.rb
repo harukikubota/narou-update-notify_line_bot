@@ -6,7 +6,7 @@ class NovelAdd < TextCommand
   end
 
   def call
-    ncode = @request_info.data.user_send_text.match(Constants::REG_NCODE).to_s
+    ncode = @user_send_text.match(Constants::REG_NCODE).to_s
     add_novel(ncode)
   end
 
@@ -14,26 +14,26 @@ class NovelAdd < TextCommand
 
   def add_novel(ncode)
     @success = true
-    return self && regist_limit_over if is_regist_limit_over?
+    return self && regist_limit_over if regist_limit_over?
 
     novel = Novel.build_by_ncode(ncode)
-
-    if novel&.save
-      @message = link_user_to_novel(user.id, novel.id) ? reply_already_registered(novel) : reply_created(novel)
-    else
-      @message = reply_unprocessable_entity
-    end
+    @message =
+      if novel&.save
+        link_u_to_n(user.id, novel.id) ? reply_already_registered(novel) : reply_created(novel)
+      else
+        reply_unprocessable_entity
+      end
   end
 
   def regist_limit_over
-    @message = LineMessage.build_by_single_message(reply_regist_limit_over)
+    @message = reply_regist_limit_over
   end
 
-  def is_regist_limit_over?
+  def regist_limit_over?
     UserCheckNovel.where(user_id: user.id).count == user.regist_max
   end
 
-  def link_user_to_novel(user_id, novel_id)
+  def link_u_to_n(user_id, novel_id)
     UserCheckNovel.link_user_to_novel(user_id, novel_id)
   end
 
@@ -69,6 +69,7 @@ class NovelAdd < TextCommand
 
       新しく追加するには登録を削除してください。
     MES
+    LineMessage.build_by_single_message(message)
   end
 
   def button_action_do_delete(novel_id)

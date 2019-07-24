@@ -10,7 +10,7 @@ class Follow < FollowCommand
       @message = LineMessage.build_by_single_message(reply_unblock)
     else
       User.create(
-        line_id: @user_info.line_id
+        line_id: @request_info.user_info.line_id
       )
       @message = LineMessage.build_by_single_message(reply_add_friend)
     end

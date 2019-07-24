@@ -1,0 +1,59 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 843
+  },
+  "selected": false,
+  "name": "top-menu__list",
+  "chatBarText": "一覧表示メニュー",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=menu&name=top-menu"
+      }
+    },
+    {
+      "bounds": {
+        "x": 625,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=novel_list"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1250,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=writer_list"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1875,
+        "y": 0,
+        "width": 625,
+        "height": 843
+      },
+      "action": {
+        "type": "postback",
+        "data": "action=recommend"
+      }
+    }
+  ]
+}
