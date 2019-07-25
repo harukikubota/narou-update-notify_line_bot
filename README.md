@@ -30,7 +30,11 @@ heroku run rake db:migrate
 
 ### Database initialization
 ``` bash
+# local
 rake db:seed
+
+# heroku
+heroku run rake db:seed
 ```
 
 ### SERVER START
