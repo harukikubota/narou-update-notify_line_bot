@@ -2,22 +2,56 @@ require 'line/bot'
 require 'json'
 require_relative '../line_request/line_client.rb'
 
+# ---------------------------------- #
+# 【使い方】
+# $ source $project_dir/.richmenurc
+# pry(main)> Ctrl + V
+# ---------------------------------- #
+
+# APIに設定されているリッチメニューの一覧を表示する。
 def list
   res = client.get_rich_menus
   ret = JSON.parse(res.body)
   menus = ret['richmenus'].map { |item| [item['name'], item['richMenuId']] }
-  menus.each.with_index(1) {|(name, id), index| p "#{index}. #{name}: #{id}" }
-  nil
+  menus.map.with_index(1) {|(name, id), index| "#{index}. #{name}: #{id}" }
 end
 
-def create_rich_menu(rich_menu_obj_name, image_name, attribute)
+# DBにはレコードなし、LINEAPIサーバには登録済の時に使用する。
+def set_db_by_fetch_line_api
+  lists = list.each_with_object(' ').map(&:split).each_with_object(2).map(&:last)
+  lists.each { |l| create(*l) }
+end
+
+# DB、LINEAPIサーバにリッチメニューが登録されていない時に使用する。
+def set_db_and_line_api
+  # 指定したディレクトリからファイル一覧を取得する。ファイル名のみ。
+  find_files = ->(path) { Dir.glob(path + '*').each_with_object('/').map(&:split).map(&:last).map { |file_name| File.basename(file_name) } }
+  base_name_files = find_files.call(data_path).sort
+  image_files_by_name = find_files.call(image_path).sort
+
+  # JSONファイル名、IMAGEファイル名を渡し、DBとAPIに登録する。
+  base_name_files.zip(image_files_by_name).each do |json, image|
+    create_rich_menu(json, image)
+  end
+
+  # デフォルトのリッチメニューを設定する。
+  default_rich_menu = RichMenu.find_by_name('top-menu')
+  client.set_default_rich_menu(default_rich_menu.rich_menu_id)
+end
+
+def api_rich_menu_delete_all
+  ids = list.each_with_object(' ').map(&:split).map(&:last)
+  ids.each { |id| client.delete_rich_menu(id) }
+end
+
+def create_rich_menu(rich_menu_obj_name, image_name)
   json_obj = to_json_obj_rich_menu(rich_menu_obj_name)
   img_obj = to_image_obj_rich_menu(image_name)
   name = File.basename(rich_menu_obj_name, '.*')
 
   res = client.create_rich_menu(json_obj)
   rich_menu_id = res.body.scan(/(richmenu-\w+)/)[0][0]
-  create(rich_menu_id, name, attribute)
+  create(rich_menu_id, name)
   client.create_rich_menu_image(rich_menu_id, img_obj)
 end
 
@@ -33,14 +67,13 @@ def client
   @client ||= LineClient.new.client
 end
 
-def create(rich_menu_id, name, attribute)
+def create(rich_menu_id, name)
   if menu = RichMenu.find_by_name(name)
     menu.update(rich_menu_id: rich_menu_id)
   else
     RichMenu.create(
       rich_menu_id: rich_menu_id,
-      name: name,
-      menu_attribute: attribute
+      name: name
     )
   end
 end
