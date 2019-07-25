@@ -25,6 +25,7 @@ class Help < PostbackCommand
   # ----------------------------------------------------- #
   def help_novel_list
     <<~MES.chomp
+      【小説一覧】
       1. 機能説明
         更新を通知できる小説の一覧を表示します。
 
@@ -37,6 +38,7 @@ class Help < PostbackCommand
 
   def help_novel_add
     <<~MES.chomp
+      【小説追加】
       1. 機能説明
         更新を通知したい小説を追加します。
 
@@ -48,6 +50,7 @@ class Help < PostbackCommand
 
   def help_novel_delete
     <<~MES.chomp
+      【小説削除】
       1. 機能説明
         小説の更新通知を解除します。
 
@@ -60,6 +63,7 @@ class Help < PostbackCommand
 
   def help_writer_list
     <<~MES.chomp
+      【作者一覧】
       1. 機能説明
         更新を通知できる作者の一覧を表示します。
 
@@ -72,6 +76,7 @@ class Help < PostbackCommand
 
   def help_writer_add
     <<~MES.chomp
+      【作者追加】
       1. 機能説明
         更新を通知したい作者を追加します。
 
@@ -83,6 +88,7 @@ class Help < PostbackCommand
 
   def help_writer_delete
     <<~MES.chomp
+      【作者削除】
       1. 機能説明
         作者の更新通知を解除します。
 
@@ -95,6 +101,7 @@ class Help < PostbackCommand
 
   def help_separator
     <<~MES.chomp
+      【区切り線】
       1. 機能説明
         通知の合間、メモなどに使用できる区切り線を表示します。
 
@@ -106,6 +113,7 @@ class Help < PostbackCommand
 
   def help_infomartion
     <<~MES.chomp
+      【インフォメーション】
       1. 機能説明
         登録上限の確認、各種問い合わせを行えます。
 
@@ -117,6 +125,7 @@ class Help < PostbackCommand
 
   def help_config
     <<~MES.chomp
+      【設定】
       1. 機能説明
         各種設定の確認、変更が行えます。
 
