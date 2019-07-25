@@ -4,7 +4,7 @@
     "height": 1686
   },
   "selected": false,
-  "name": "top-menu--default",
+  "name": "top-menu",
   "chatBarText": "トップメニュー",
   "areas": [
     {
@@ -40,7 +40,7 @@
       },
       "action": {
         "type": "postback",
-        "data": "action=menu&name=top-menu__info"
+        "data": "action=menu&name=top-menu__information"
       }
     },
     {
