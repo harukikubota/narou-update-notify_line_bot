@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_045436) do
+ActiveRecord::Schema.define(version: 2019_07_25_044068) do
 
   create_table "config_notify_times", force: :cascade do |t|
     t.integer "time_range_start", null: false
