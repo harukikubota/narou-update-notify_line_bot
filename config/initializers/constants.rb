@@ -81,5 +81,6 @@ module Constants
     TYPE_PLANE = 'text'.freeze
     TYPE_BUTTON = 'buttons'.freeze
     TYPE_CAROUSEL = 'carousel'.freeze
+    TYPE_QUICK_REPLY = 'quickReply'.freeze
   end
 end

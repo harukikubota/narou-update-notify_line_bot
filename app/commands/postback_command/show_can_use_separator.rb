@@ -1,3 +1,5 @@
+require_relative '../../../lib/line_request/line_message/element/quick_reply_element.rb'
+
 class ShowCanUseSeparator < PostbackCommand
   def initialize(request_info)
     super
@@ -11,8 +13,9 @@ class ShowCanUseSeparator < PostbackCommand
   private
 
   def create_message
-    items = separators.map { |sep| item_template(sep.use_str, sep.id) }
-    message_template(message_header, items)
+    element = QuickReplyElement.new(message_header)
+    separators.map { |sep| element.add_action(action(sep.use_str, sep.id)) }
+    LineMessage.build_by_quick_reply(element)
   end
 
   def separators
@@ -26,24 +29,11 @@ class ShowCanUseSeparator < PostbackCommand
     MES
   end
 
-  def item_template(sep_str, sep_id)
+  def action(sep_str, sep_id)
     {
-      "type": 'action',
-      "action": {
-        "type": 'postback',
-        "label": sep_str,
-        "data": "action=set_separator&separator_id=#{sep_id}"
-      }
-    }
-  end
-
-  def message_template(text, items)
-    {
-      "type": 'text',
-      "text": text,
-      "quickReply": {
-        "items": items
-      }
+      "type": 'postback',
+      "label": sep_str,
+      "data": "action=set_separator&separator_id=#{sep_id}"
     }
   end
 end

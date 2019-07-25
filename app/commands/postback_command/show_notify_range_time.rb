@@ -1,3 +1,5 @@
+require_relative '../../../lib/line_request/line_message/element/quick_reply_element.rb'
+
 class ShowNotifyRangeTime < PostbackCommand
   def initialize(request_info)
     super
@@ -11,11 +13,9 @@ class ShowNotifyRangeTime < PostbackCommand
   private
 
   def create_message
-    items = notify_times.map do |time|
-      label = string_range_time_to(time.to_range)
-      item_template(label, time.id)
-    end
-    message_template(message_header, items)
+    element = QuickReplyElement.new(message_header)
+    notify_times.map { |time| element.add_action(action(string_range_time_to(time.to_range), time.id)) }
+    LineMessage.build_by_quick_reply(element)
   end
 
   def notify_times
@@ -29,24 +29,12 @@ class ShowNotifyRangeTime < PostbackCommand
     MES
   end
 
-  def item_template(label, id)
+  def action(label, id)
     {
-      "type": 'action',
-      "action": {
-        "type": 'postback',
-        "label": label,
-        "data": "action=set_notify_range_time&notify_time_id=#{id}"
-      }
+      "type": 'postback',
+      "label": label,
+      "data": "action=set_notify_range_time&notify_time_id=#{id}"
     }
   end
 
-  def message_template(text, items)
-    {
-      "type": 'text',
-      "text": text,
-      "quickReply": {
-        "items": items
-      }
-    }
-  end
 end
