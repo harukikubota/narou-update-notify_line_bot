@@ -1,5 +1,5 @@
 require_relative '../narou.rb'
-require_relative '../line_request/line_messenger.rb'
+require_relative '../line_request/line_client.rb'
 require_relative '../line_request/line_message/carousel.rb'
 require_relative '../line_request/line_message/element/carousel_column.rb'
 require_relative '../line_request/line_message/element/carousel_element.rb'
@@ -67,15 +67,12 @@ module Narou::UpdateCheckNewNovel extend self
 
         message = Carousel.build_carousel(carousel_ele)
 
-        res = client.send(user_id, message)
-        Rails.logger.info('start')
-        Rails.logger.info(message)
-        Rails.logger.info(res.body)
+        client.push_message(user_id, message)
       end
     end
 
     def client
-      @client ||= LineRequest::LineMessenger.new
+      @client ||= LineClient.new.client
     end
 
     #def build_notify_data(items)
