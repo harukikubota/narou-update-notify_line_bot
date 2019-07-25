@@ -10,6 +10,7 @@ class BaseCommand
 
   include MessageBuilder
   include Client
+  include ConfigModule
 
   def call
     raise NO_OVERRIDE_ERROR

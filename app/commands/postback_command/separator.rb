@@ -9,7 +9,6 @@ class Separator < PostbackCommand
   end
 
   def reply_separator
-    sep = user.find_user_use_separate
-    sep * 20
+    now_use_separator * 10
   end
 end
