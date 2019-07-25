@@ -1,0 +1,2 @@
+class ConfigNotifyTime < ApplicationRecord
+end

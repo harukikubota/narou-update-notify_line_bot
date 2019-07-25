@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_23_195820) do
+ActiveRecord::Schema.define(version: 2019_07_25_045436) do
+
+  create_table "config_notify_times", force: :cascade do |t|
+    t.integer "time_range_start", null: false
+    t.integer "time_range_end", null: false
+  end
+
+  create_table "config_separates", force: :cascade do |t|
+    t.string "use_str", limit: 1
+    t.index ["use_str"], name: "index_config_separates_on_use_str", unique: true
+  end
 
   create_table "novels", force: :cascade do |t|
     t.string "title", null: false
@@ -48,12 +58,23 @@ ActiveRecord::Schema.define(version: 2019_07_23_195820) do
     t.index ["writer_id"], name: "index_user_check_writers_on_writer_id"
   end
 
+  create_table "user_configs", force: :cascade do |t|
+    t.integer "config_notify_time_id"
+    t.integer "config_separate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["config_notify_time_id"], name: "index_user_configs_on_config_notify_time_id"
+    t.index ["config_separate_id"], name: "index_user_configs_on_config_separate_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "line_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enable", default: true, null: false
     t.integer "regist_max", default: 15, null: false
+    t.integer "user_config_id"
+    t.index ["user_config_id"], name: "index_users_on_user_config_id"
   end
 
   create_table "writers", force: :cascade do |t|

@@ -1,0 +1,2 @@
+class UserConfig < ApplicationRecord
+end
