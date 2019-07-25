@@ -9,6 +9,6 @@ class Separator < PostbackCommand
   end
 
   def reply_separator
-    now_use_separator * 10
+    now_use_separator * Constants::Reply::SEPARATOR_TIMES
   end
 end

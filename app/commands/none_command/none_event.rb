@@ -4,7 +4,7 @@ class NoneEvent < NoneCommand
   end
 
   def call
-    @message = LineMessage.build_by_single_message('未対応のメッセージです。')
+    @message = LineMessage.build_by_single_message(Constants::Reply::NOT_COMPATIBLE_MESSAGE)
     @success = true
   end
 end

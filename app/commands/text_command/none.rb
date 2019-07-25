@@ -4,7 +4,7 @@ class None < TextCommand
   end
 
   def call
-    @message = LineMessage.build_by_single_message('入力された内容では何もすることができません。')
+    @message = LineMessage.build_by_single_message(Constants::Reply::UNSUPPOERTED_INPUT)
     @success = true
   end
 end

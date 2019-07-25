@@ -1,4 +1,3 @@
-require 'line/bot'
 require 'json'
 require_relative '../line_request/line_client.rb'
 
@@ -129,5 +128,10 @@ def show_help_my_commands
   p '  to_image_obj_rich_menu(image_name)'
 end
 
-p '### リッチメニュー操作スクリプト ###'
-p '使い方は hlp を呼び出してください'
+def init_rich_menus
+  api_rich_menu_delete_all
+  set_db_and_line_api
+end
+
+p '### リッチメニュー操作スクリプト ###' if Rails.env == 'development'
+p '使い方は hlp を呼び出してください' if Rails.env == 'development'
