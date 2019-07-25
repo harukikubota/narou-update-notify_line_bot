@@ -1,4 +1,4 @@
-class None < NoneCommand
+class NoneEvent < NoneCommand
   def initialize(request_info)
     super
   end
