@@ -28,7 +28,7 @@
       },
       "action": {
         "type": "postback",
-        "data": "action=notify_range_time"
+        "data": "action=show_notify_range_time"
       }
     },
     {
