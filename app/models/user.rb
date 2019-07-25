@@ -3,8 +3,17 @@ class User < ApplicationRecord
   has_many :novels, through: :user_check_novels
   has_many :user_check_writers
   has_many :writers, through: :user_check_writers
+  has_one :user_config
 
   class << self
+    def new_user(line_id)
+      default_config = UserConfig.default_record
+      user = create(line_id: line_id)
+      default_config.user_id = user.id
+      default_config.save
+      user.update(user_config_id: default_config.id)
+    end
+
     # novel.id を引数に、novel.id を登録かつ退会していない人一覧を取得する
     def find_effective_users_in_novel(novel_id)
       joins(:novels)
@@ -12,19 +21,42 @@ class User < ApplicationRecord
         .where(novels: { id: novel_id }, users: { enable: true })
     end
 
-    # writer.id を引数に、writer.id を登録かつ退会していない人一覧を取  得する
+    # writer.id を引数に、writer.id を登録かつ退会していない人一覧を取得する
     def find_effective_users_in_writer(writer_id)
       joins(:writers)
         .select('writers.*, users.*')
-        .where(writers: { id: writer_id }, users: { enable:   true })
+        .where(writers: { id: writer_id }, users: { enable: true })
     end
   end
 
+  # ブロック解除時
   def enable_to_user
     update(enable: true) unless enable?
   end
 
+  # ブロック時
   def disable_to_user
     update(enable: false) if enable?
+  end
+
+  # 使用している区切り文字を取得する
+  #
+  # return [separate] "-"
+  #
+  def find_user_use_separate
+    ConfigSeparate.where(
+      id: UserConfig.where(user_id: id).select(:config_separate_id)
+    ).first.use_str
+  end
+
+  # 通知可能な時間を取得する
+  #
+  # return [can_notify_time_range] <Range 7..23>
+  #
+  def find_user_can_notify_time
+    ret = ConfigNotifyTime.where(
+      id: UserConfig.where(user_id: id).select(:config_notify_time_id)
+    ).first
+    (ret.time_range_start)..(ret.time_range_end)
   end
 end

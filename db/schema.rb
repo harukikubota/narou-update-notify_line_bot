@@ -33,7 +33,6 @@ ActiveRecord::Schema.define(version: 2019_07_25_045436) do
   create_table "rich_menus", force: :cascade do |t|
     t.string "rich_menu_id", null: false
     t.string "name", null: false
-    t.string "menu_attribute", default: "default", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_rich_menus_on_name", unique: true
@@ -59,12 +58,14 @@ ActiveRecord::Schema.define(version: 2019_07_25_045436) do
   end
 
   create_table "user_configs", force: :cascade do |t|
+    t.integer "user_id"
     t.integer "config_notify_time_id"
     t.integer "config_separate_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["config_notify_time_id"], name: "index_user_configs_on_config_notify_time_id"
     t.index ["config_separate_id"], name: "index_user_configs_on_config_separate_id"
+    t.index ["user_id"], name: "index_user_configs_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
