@@ -40,7 +40,7 @@
       },
       "action": {
         "type": "postback",
-        "data": "action=show_can_use_separators"
+        "data": "action=show_can_use_separator"
       }
     },
     {
