@@ -1,5 +1,3 @@
-require_relative '../none_command.rb'
-
 class None < NoneCommand
   def initialize(request_info)
     super

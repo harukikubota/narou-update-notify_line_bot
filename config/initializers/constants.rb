@@ -34,40 +34,16 @@ module Constants
   #
   module TextRegexp
     NOVEL_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
-    NOVEL_LIST = /小説一覧/.freeze
     WRITER_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_MYPAGE_URL}#{REG_WRITER_ID}/}.freeze
-    WRITER_LIST = /作者一覧/.freeze
-    HELP = /help|ヘルプ|へるぷ|Help|HELP/.freeze
-    INFO = /インフォメーション|[iI]nformation|バグ|要望|機能/.freeze
-    SEPARATOR = /区切/.freeze
     LINE_REQUEST = /Hello, world/.freeze
   end
 
   module Request
-    # Request Type
     TYPE_FOLLOW = :follow
     TYPE_UNFOLLOW = :unfollow
-
-    ## Postback
-    ### 暫定版
     TYPE_POSTBACK = :postback
-    TYPE_POSTBACK_NOVEL_DELETE = :novel_delete
-    TYPE_POSTBACK_WRITER_DELETE = :writer_delete
-
-    ## Text
-    ### 暫定でtextを指定する。
     TYPE_TEXT = :text
-    TYPE_TEXT_ADD_NOVEL = :novel_add
-    TYPE_TEXT_LIST_NOVEL = :novel_list
-    TYPE_TEXT_ADD_WRITER = :writer_add
-    TYPE_TEXT_LIST_WRITER = :writer_list
-    TYPE_TEXT_HELP = :help
-    TYPE_TEXT_INFO = :info
-    TYPE_TEXT_SEP = :separator
-    TYPE_TEXT_LINE_REQUEST = :line
-    TYPE_TEXT_DEBUG = :debug
-
-    ## None(当てはまるものなし)
+    # None(当てはまるものなし)
     TYPE_NONE = :none
   end
 
