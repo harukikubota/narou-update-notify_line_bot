@@ -1,4 +1,3 @@
-require 'nokogiri'
 require 'json'
 require 'uri'
 require 'net/http'

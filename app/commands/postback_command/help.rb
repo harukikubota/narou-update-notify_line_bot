@@ -26,10 +26,10 @@ class Help < PostbackCommand
   def help_novel_list
     <<~MES.chomp
       【小説一覧】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         更新を通知できる小説の一覧を表示します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         [トップメニュー]
           ⇨[一覧メニュー]
           ⇨[小説一覧]
@@ -39,24 +39,24 @@ class Help < PostbackCommand
   def help_novel_add
     <<~MES.chomp
       【小説追加】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         更新を通知したい小説を追加します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         更新を通知したいなろう小説のURLを送信します。
-        例：「https://ncode.syosetu.com/n6169dz/」
+        例：「#{NAROU_NOVEL_URL}n6169dz/」
     MES
   end
 
   def help_novel_delete
     <<~MES.chomp
       【小説削除】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         小説の更新通知を解除します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         ①更新通知を解除したいなろう小説のURLを送信します。
-          例：「https://ncode.syosetu.com/n6169dz/」
+          例：「#{NAROU_NOVEL_URL}n6169dz/」
         ②「削除確認メッセージ」が表示されますので、「削除する」を選択してください。
     MES
   end
@@ -64,10 +64,10 @@ class Help < PostbackCommand
   def help_writer_list
     <<~MES.chomp
       【作者一覧】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         更新を通知できる作者の一覧を表示します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         [トップメニュー]
           ⇨[一覧メニュー]
           ⇨[作者一覧]
@@ -77,24 +77,24 @@ class Help < PostbackCommand
   def help_writer_add
     <<~MES.chomp
       【作者追加】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         更新を通知したい作者を追加します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         更新を通知したいなろう作者のマイページURLを送信します。
-        例：「https://mypage.syosetu.com/474038/」
+        例：「#{NAROU_MYPAGE_URL}474038/」
     MES
   end
 
   def help_writer_delete
     <<~MES.chomp
       【作者削除】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         作者の更新通知を解除します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         ①更新通知を解除したいなろう作者のマイページURLを送信します。
-          例：「https://mypage.syosetu.com/474038/」
+          例：「#{NAROU_MYPAGE_URL}474038/」
         ②「削除確認メッセージ」が表示されますので、「削除する」を選択してください。
     MES
   end
@@ -102,10 +102,10 @@ class Help < PostbackCommand
   def help_separator
     <<~MES.chomp
       【区切り線】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         通知の合間、メモなどに使用できる区切り線を表示します。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         [トップメニュー]
           ⇨[区切り線]
     MES
@@ -114,10 +114,10 @@ class Help < PostbackCommand
   def help_infomartion
     <<~MES.chomp
       【インフォメーション】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         登録上限の確認、各種問い合わせを行えます。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         [トップメニュー]
           ⇨[インフォメーション]
     MES
@@ -126,10 +126,10 @@ class Help < PostbackCommand
   def help_config
     <<~MES.chomp
       【設定】
-      1. 機能説明
+      #{Constants::Reply::HELP_TITLE_DESCRIPTION}
         各種設定の確認、変更が行えます。
 
-      2. 操作方法
+      #{Constants::Reply::HELP_TITLE_OPERATION}
         [トップメニュー]
           ⇨[設定]
     MES

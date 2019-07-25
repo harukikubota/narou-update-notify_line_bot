@@ -1,6 +1,4 @@
 class NovelList < PostbackCommand
-  REPLY_MESSAGE_LIST_HEAD = '【一覧の表示】'.freeze
-
   def initialize(request_info)
     super
   end
@@ -18,13 +16,13 @@ class NovelList < PostbackCommand
 
     message_list = list.inject("") { |str, mes| str += mes }
 
-    message = "#{REPLY_MESSAGE_LIST_HEAD}#{message_list}"
+    message = "#{Constants::Reply::REPLY_MESSAGE_LIST_HEAD}#{message_list}"
     LineMessage.build_by_single_message(message)
   end
 
   def reply_no_item
     message = <<~MES.chomp
-      #{REPLY_MESSAGE_LIST_HEAD}
+      #{Constants::Reply::REPLY_MESSAGE_LIST_HEAD}
 
       現在登録しているなろう小説はありません。
       追加するにはなろう小説のURLを送信してください。

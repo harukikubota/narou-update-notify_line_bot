@@ -27,6 +27,17 @@ module Constants
   ## バッチ
   CAN_NOTIFY_TIME_RANGE = Rails.env == 'production' ? [*7..22] : [*0..23]
 
+  NO_OVERRIDE_ERROR = 'no override error'
+
+  module Command
+    NO_COMMAND_ERROR = '該当のコマンドがありません'.freeze
+    COMMANDS_PAHT = './app/commands/'.freeze
+    FOLLOW_COMMAND_PATH = 'follow_command/'.freeze
+    NONE_COMMAND_PATH = 'none_command/'
+    POSTBACK_COMMAND_PATH = 'postback_command/'
+    TEXT_COMMAND_PATH = 'text_command/'
+  end
+
   # テキストの送信に対して、タイプを判定するために使用する。
   #
   # 定数名から呼び出すファイルを決めるため、注意する。
@@ -38,9 +49,18 @@ module Constants
     LINE_REQUEST = /Hello, world/.freeze
   end
 
+  module Reply
+    NOT_COMPATIBLE_MESSAGE = '未対応のメッセージです。'.freeze
+    HELP_TITLE_DESCRIPTION = '1. 機能説明'.freeze
+    HELP_TITLE_OPERATION = '2. 操作方法'.freeze
+    REPLY_MESSAGE_LIST_HEAD = '【一覧の表示】'.freeze
+    PLEASE_WAIT = '現在未対応です。もうしばらくお待ちください。'.freeze
+    SEPARATOR_TIMES = 10
+    UNSUPPOERTED_INPUT = '入力された内容では何もすることができません。'.freeze
+  end
+
   module Request
     TYPE_FOLLOW = :follow
-    TYPE_UNFOLLOW = :unfollow
     TYPE_POSTBACK = :postback
     TYPE_TEXT = :text
     # None(当てはまるものなし)

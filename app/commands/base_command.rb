@@ -1,19 +1,15 @@
 require 'active_support/core_ext/class/subclasses'
 
-# TODO バージョン 1.1.0 で使用するようにする
 # Commandsの基底クラス
 class BaseCommand
   attr_reader :message
-  NO_OVERRIDE_ERROR = 'no override error'
-  NO_COMMAND_ERROR = '該当のコマンドがありません'
-  COMMANDS_PAHT = './app/commands/'
 
-  include MessageBuilder
-  include Client
+  include CommandCommon
   include ConfigModule
+  include MessageBuilder
 
   def call
-    raise NO_OVERRIDE_ERROR
+    raise Constants::NO_OVERRIDE_ERROR
   end
 
   # Commandの実行結果
@@ -24,9 +20,14 @@ class BaseCommand
 
   def self.build(command_identifier)
     file_name = command_identifier.downcase
-    require "#{COMMANDS_PAHT}#{@command_folder_path}#{file_name}"
     to_camel_case = ->(str) { str.split('_').map(&:capitalize).join }
-    const_get(to_camel_case.call(command_identifier))
+
+    begin
+      require "#{Constants::Command::COMMANDS_PAHT}#{@command_folder_path}#{file_name}"
+      const_get(to_camel_case.call(command_identifier))
+    rescue => exception
+      Rails.logger.fetal(Constants::Command::NO_COMMAND_ERROR)
+    end
   end
 
   protected
@@ -34,13 +35,5 @@ class BaseCommand
   def initialize(request_info)
     @request_info = request_info
     @success = false
-  end
-
-  def user
-    @user ||= User.find_by_line_id(@request_info.user_info.line_id)
-  end
-
-  def messenger
-    LineMessenger.new
   end
 end

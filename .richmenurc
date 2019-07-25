@@ -1,4 +1,5 @@
 # source .richmenurc
+# デバッグ環境のみ実行可能。
 echo 'press Command + V !!'
 echo "load './lib/line_rich_menu/rich_menu.rb'" | pbcopy
 rails c

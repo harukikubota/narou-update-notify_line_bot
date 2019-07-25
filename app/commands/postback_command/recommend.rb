@@ -4,7 +4,7 @@ class Recommend < PostbackCommand
   end
 
   def call
-    @message = LineMessage.build_by_single_message('現在未対応です。もうしばらくお待ちください。')
+    @message = LineMessage.build_by_single_message(Constants::Reply::PLEASE_WAIT)
     @success = true
     # title, ncode, synopsis
     #admin_recommend_novels = Novel.find_admin_recommends(admin_recommend_list)

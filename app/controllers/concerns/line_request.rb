@@ -12,10 +12,8 @@ module LineRequest
       when Line::Bot::Event::MessageType::Text
         event_type = Constants::Request::TYPE_TEXT
       end
-    when Line::Bot::Event::Follow
+    when Line::Bot::Event::Follow, Line::Bot::Event::Unfollow
       event_type = Constants::Request::TYPE_FOLLOW
-    when Line::Bot::Event::Unfollow
-      event_type = Constants::Request::TYPE_UNFOLLOW
     when Line::Bot::Event::Postback
       event_type = Constants::Request::TYPE_POSTBACK
     end

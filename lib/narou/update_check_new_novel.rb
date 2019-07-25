@@ -52,7 +52,7 @@ module Narou::UpdateCheckNewNovel extend self
       datas.each_with_object([]) { |data, arr| arr << notify_element.new(*data.flatten!) }
     end
 
-    # TODO 更新が６件以上の時エラーになるので変更する
+    # TODO 更新が11件以上の時エラーになるので変更する
     def notify_update_novel_to_user(users_data)
       users_data.flatten!.group_by(&:user_line_id)
       .each do |user_id, items|

@@ -22,8 +22,7 @@ class LineRequest::RequestInfo
     @data = case @type
             when Constants::Request::TYPE_TEXT
               LineRequest::TextRequestInfo.new(data)
-            when Constants::Request::TYPE_FOLLOW, Constants::Request::TYPE_UNFOLLOW
-              @type = :follow
+            when Constants::Request::TYPE_FOLLOW
               LineRequest::FollowRequestInfo.new(data)
             when Constants::Request::TYPE_POSTBACK
               LineRequest::PostbackRequestInfo.new(data)
