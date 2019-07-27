@@ -14,7 +14,6 @@ class Novel < ApplicationRecord
       ret, title, last_episode_id = Narou.fetch_episode(ncode)
       return nil unless ret
 
-      binding.pry
       writer = Writer.build_by_ncode(ncode)
 
       create(

@@ -33,5 +33,5 @@ Novel.build_by_ncode('n2267be')
 Writer.build_by_writer_id('235132')
 
 ## recommend
-ncodes = %w[n2267be n9016cm n6161h n6169dz n1488bj]
+ncodes = %w[n6169dz n9016cm n2267be n6161h n1488bj]
 Recommend.build_recommend_by_ncodes(ncodes)
