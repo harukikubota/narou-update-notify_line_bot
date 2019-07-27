@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_044068) do
+ActiveRecord::Schema.define(version: 2019_07_26_084943) do
 
   create_table "config_notify_times", force: :cascade do |t|
     t.integer "time_range_start", null: false
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 2019_07_25_044068) do
     t.integer "last_episode_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "writer_id"
+    t.index ["writer_id"], name: "index_novels_on_writer_id"
+  end
+
+  create_table "recommends", force: :cascade do |t|
+    t.integer "novel_id"
+    t.integer "writer_id"
+    t.integer "rank"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["novel_id"], name: "index_recommends_on_novel_id"
+    t.index ["writer_id"], name: "index_recommends_on_writer_id"
   end
 
   create_table "rich_menus", force: :cascade do |t|

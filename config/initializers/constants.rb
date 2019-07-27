@@ -12,10 +12,15 @@ module Constants
   # NAROU API
   ## ncode を指定する
   NAROU_API_QUERY_FETCH_EPISODE = '?/lim=1&of=t-ga&out=json&ncode='.freeze
+  NAROU_API_QUERY_FETCH_WRITER = '?order=ncodedesc&of=u-w&out=json&ncode='
   ## writer_id を指定する
   NAROU_API_QUERY_FETCH_WRITER_NEW_EPISODE = '?order=ncodedesc&of=t-n-w&out=json&userid='.freeze
+  NAROU_API_QUERY_FETCH_SYNOPSIS = '?of=s&out=json&ncode='
   NAROU_API_SEARCH_RESULT_COUNT = 'allcount'.freeze
   NAROU_API_NOVEL_TITLE = 'title'.freeze
+  NAROU_API_WRITER_ID = 'userid'.freeze
+  NAROU_API_WRITER_NAME = 'writer'.freeze
+  NAROU_API_STORY = 'story'.freeze
   NAROU_API_NOVEL_EPISODE_COUNT = 'general_all_no'.freeze
 
   # REGEXP
@@ -46,7 +51,7 @@ module Constants
   module TextRegexp
     NOVEL_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_URL}#{REG_NCODE}/}.freeze
     WRITER_ADD = %r{#{REG_PROTOCOL}://#{BASE_NAROU_MYPAGE_URL}#{REG_WRITER_ID}/}.freeze
-    LINE_REQUEST = /Hello, world/.freeze
+    LINE_RESPONSE = /Hello, world/.freeze
   end
 
   module Reply

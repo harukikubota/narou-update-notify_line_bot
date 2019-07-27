@@ -52,7 +52,7 @@
       },
       "action": {
         "type": "postback",
-        "data": "action=recommend"
+        "data": "action=show_recommend"
       }
     }
   ]

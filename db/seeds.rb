@@ -26,8 +26,12 @@ needs_updating_users.each do |user|
   default_user_config.save
   user.update(user_config_id: default_user_config.id)
 end
-## novel
+## novel sample
 Novel.build_by_ncode('n2267be')
 
-## writer
+## writer sample
 Writer.build_by_writer_id('235132')
+
+## recommend
+ncodes = %w[n2267be n9016cm n6161h n6169dz n1488bj]
+Recommend.build_recommend_by_ncodes(ncodes)

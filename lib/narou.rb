@@ -31,6 +31,20 @@ module Narou
       ]
     end
 
+    def fetch_writer_info_by_ncode(ncode)
+      uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_WRITER + ncode)
+      json = Net::HTTP.get(uri)
+      result = JSON.parse(json)
+
+      return false if (result[0])[Constants::NAROU_API_SEARCH_RESULT_COUNT].zero?
+      _, info = result
+      [
+        true,
+        info[Constants::NAROU_API_WRITER_ID],
+        info[Constants::NAROU_API_WRITER_NAME]
+      ]
+    end
+
     # 指定した作者IDの投稿諸説を、新規投稿順で取得する。
     #
     # param [writer_id] 作者のID。String
@@ -50,6 +64,21 @@ module Narou
       result = JSON.parse(json)
       count = (result.shift)[Constants::NAROU_API_SEARCH_RESULT_COUNT]
       [count, result]
+    end
+
+
+    # あらすじを取得する
+    def fetch_synopsis(ncode)
+      uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_SYNOPSIS + ncode)
+      json = Net::HTTP.get(uri)
+      result = JSON.parse(json)
+
+      return false if (result[0])[Constants::NAROU_API_SEARCH_RESULT_COUNT].zero?
+      _, info = result
+      [
+        true,
+        info[Constants::NAROU_API_STORY]
+      ]
     end
   end
 end

@@ -1,6 +1,6 @@
 require_relative '../narou.rb'
 require_relative '../line_request/line_client.rb'
-require_relative '../line_request/line_message/carousel.rb'
+require_relative '../line_request/line_message.rb'
 require_relative '../line_request/line_message/element/carousel_column.rb'
 require_relative '../line_request/line_message/element/carousel_element.rb'
 
@@ -17,7 +17,6 @@ module Narou::UpdateCheck extend self
     include Narou
 
     def run
-      binding.pry
       novels = Novel.all
       @something_notify_flag = false
       notify_users_data = novels.each_with_object([]) do |novel, arr|
@@ -62,7 +61,7 @@ module Narou::UpdateCheck extend self
           )
         end
 
-        message = Carousel.build_carousel(carousel_ele)
+        message = LineMessage.build_carousel(carousel_ele)
 
         client.push_message(user_id, message)
       end

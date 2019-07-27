@@ -1,4 +1,5 @@
 class Writer < ApplicationRecord
+  has_many :novels
   has_many :user_check_writers
   has_many :users, through: :user_check_writers
 
@@ -17,6 +18,11 @@ class Writer < ApplicationRecord
         name: name,
         novel_count: count
       )
+    end
+
+    def build_by_ncode(ncode)
+      success, writer_id = Narou.fetch_writer_info_by_ncode(ncode)
+      success ? build_by_writer_id(writer_id) : raise('作者が存在しません!')
     end
   end
 end
