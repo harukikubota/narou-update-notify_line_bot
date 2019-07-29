@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_26_084943) do
+ActiveRecord::Schema.define(version: 2019_07_27_040015) do
 
   create_table "config_notify_times", force: :cascade do |t|
     t.integer "time_range_start", null: false
@@ -78,6 +78,15 @@ ActiveRecord::Schema.define(version: 2019_07_26_084943) do
     t.index ["config_notify_time_id"], name: "index_user_configs_on_config_notify_time_id"
     t.index ["config_separate_id"], name: "index_user_configs_on_config_separate_id"
     t.index ["user_id"], name: "index_user_configs_on_user_id"
+  end
+
+  create_table "user_notify_novels", force: :cascade do |t|
+    t.integer "novels_id"
+    t.integer "notify_novel_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notify_novel_type"], name: "index_user_notify_novels_on_notify_novel_type"
+    t.index ["novels_id"], name: "index_user_notify_novels_on_novels_id"
   end
 
   create_table "users", force: :cascade do |t|
