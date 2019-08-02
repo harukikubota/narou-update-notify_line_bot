@@ -30,4 +30,8 @@ class UserConfig < ApplicationRecord
       [def_time.id, def_sep.id]
     end
   end
+
+  def change_notify_time(config_notify_time_id)
+    update(config_notify_time_id: config_notify_time_id)
+  end
 end
