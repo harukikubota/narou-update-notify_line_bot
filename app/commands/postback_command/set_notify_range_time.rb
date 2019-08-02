@@ -12,7 +12,7 @@ class SetNotifyRangeTime < PostbackCommand
   private
 
   def change_notify_range_time
-    UserConfig.update(config_notify_time_id: user_specified_notify_time_id)
+    user.user_config.change_notify_time(user_specified_notify_time_id)
   end
 
   def user_specified_notify_time_id
