@@ -10,7 +10,7 @@ module Narou::UpdateCheckNewNovel extend self
 
   def batch
     now_hour = DateTime.now.hour
-    Constants::CAN_NOTIFY_TIME_RANGE.include?(now_hour) ? UpdateCheckNewNovel.new.run : Rails.logger.info('実行可能時間外')
+    UpdateCheckNewNovel.new.run
   end
 
   class UpdateCheckNewNovel

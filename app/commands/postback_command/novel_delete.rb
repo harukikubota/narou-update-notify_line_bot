@@ -10,7 +10,7 @@ class NovelDelete < PostbackCommand
     title = Novel.find(novel_id).title
 
     @message =
-      if UserCheckNovel.unlink_user_to_novel(novel_id, user.id)
+      if UserCheckNovel.unlink_user_to_novel(user.id, novel_id)
         LineMessage.build_by_single_message(reply_deleted(title))
       else
         LineMessage.build_by_single_message(reply_already_deleted(title))

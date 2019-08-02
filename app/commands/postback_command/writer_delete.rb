@@ -10,7 +10,7 @@ class WriterDelete < PostbackCommand
     name = Writer.find(writer_id).name
 
     @message =
-      if UserCheckWriter.unlink_user_to_writer(writer_id, user.id)
+      if UserCheckWriter.unlink_user_to_writer(user.id, writer_id)
         LineMessage.build_by_single_message(reply_deleted(name))
       else
         LineMessage.build_by_single_message(reply_already_deleted(name))
