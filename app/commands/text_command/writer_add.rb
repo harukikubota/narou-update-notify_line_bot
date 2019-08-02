@@ -6,7 +6,7 @@ class WriterAdd < TextCommand
   end
 
   def call
-    writer_id = @request_info.data.user_send_text.match(Constants::REG_WRITER_ID).to_s
+    writer_id = @user_send_text.match(Constants::REG_WRITER_ID).to_s
     add_writer(writer_id)
   end
 
@@ -47,7 +47,7 @@ class WriterAdd < TextCommand
       削除しますか？
     MES
 
-    button_ele = ButtonElement.new(message, nil, '作者の削除確認')
+    button_ele = ButtonElement.new(message_body, nil, '作者の削除確認')
     message = button_ele
       .add_action(button_action_do_delete(writer.id))
       .add_action(button_action_no_delete)

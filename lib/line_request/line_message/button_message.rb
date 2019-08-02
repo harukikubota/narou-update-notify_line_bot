@@ -8,10 +8,6 @@ module ButtonMessage
 
   private
 
-  def type
-    Constants::LineMessage::MessageType::TYPE_BUTTON
-  end
-
   def alt_text
     @alt_text ||= 'this is carousel message.'
   end
@@ -21,7 +17,7 @@ module ButtonMessage
       type: 'template',
       altText: alt_text,
       template: {
-        type: type,
+        type: Constants::LineMessage::MessageType::TYPE_BUTTON,
         text: @message_text,
         actions: @actions
       }
