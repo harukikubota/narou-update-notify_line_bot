@@ -12,7 +12,7 @@ class SetSeparator < PostbackCommand
   private
 
   def change_separator
-    UserConfig.update(config_separate_id: user_specified_separator_id)
+    user.user_config.change_use_separator(user_specified_separator_id)
   end
 
   def user_specified_separator_id

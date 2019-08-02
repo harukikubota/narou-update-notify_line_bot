@@ -34,4 +34,8 @@ class UserConfig < ApplicationRecord
   def change_notify_time(config_notify_time_id)
     update(config_notify_time_id: config_notify_time_id)
   end
+
+  def change_use_separator(config_separate_id)
+    update(config_separate_id: config_separate_id)
+  end
 end
