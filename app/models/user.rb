@@ -27,6 +27,13 @@ class User < ApplicationRecord
         .select('writers.*, users.*')
         .where(writers: { id: writer_id }, users: { enable: true })
     end
+
+    # 通知可能時間内のユーザ一覧を取得する。
+    def find_can_notify_users
+      cnt_ids = ConfigNotifyTime.find_can_notify_time_range_ids
+      joins(:user_config).eager_load(:user_config)
+        .where(user_configs: { config_notify_time_id: cnt_ids })
+    end
   end
 
   # ブロック解除時

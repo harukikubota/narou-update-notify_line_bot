@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2019_07_27_040015) do
   create_table "user_notify_novels", force: :cascade do |t|
     t.integer "novels_id"
     t.integer "notify_novel_type", null: false
+    t.integer "notify_novel_episode_no", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["notify_novel_type"], name: "index_user_notify_novels_on_notify_novel_type"
