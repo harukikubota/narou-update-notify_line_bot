@@ -2,10 +2,10 @@ require_relative '../narou.rb'
 
 module Narou::UpdateNovelNewEpisode extend self
   def batch
-    Job.new.run
+    UpdateNovelNewEpisode.new.run
   end
 
-  class Job
+  class UpdateNovelNewEpisode
     include Narou
 
     def run

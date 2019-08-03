@@ -91,6 +91,48 @@ module Narou
       [count, result]
     end
 
+    # 指定した複数の作者IDの投稿小説を、作者IDごとに新規投稿順で取得する。
+    #
+    # @params [Array<writers>] 作者一覧
+    #
+    # @return [writer_id: {count: n, ncodes: [ncode,..]},..]
+    #   writer_id Integer  作者ID。 この項目ごとにグルーピングされる。
+    #   count     Integer  作者ごとの小説投稿数。
+    #   [ncode]   String   新規投稿小説の ncode。新規投稿順にオーダーされる。
+    #
+    # @example
+    #   [
+    #     235132: {
+    #       count: 3,
+    #       ncodes: {
+    #         ncode: n0000aa,
+    #         ncode: n0000ab,
+    #         ncode: n0000ac,
+    #       }
+    #     },
+    #     474038: {..}
+    #   ]
+    #
+    def fetch_writers_episodes_order_new_post(writers)
+      split_writer_id_arr = split_writer_id(writers)
+      split_writer_id_arr.map do |arr|
+        uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_WRITER_NEW_EPISODES + arr.join('-'))
+        json = Net::HTTP.get(uri)
+        result = JSON.parse(json)
+        result.shift
+        ncodes_build = ->(ncodes) { ncodes.map { |ncode| { ncode: ncode.downcase } } }
+        ret = result.group_by { |ret| ret['userid'] }
+          .map do |writer_id, val|
+            {
+              writer_id => {
+                count: val.count,
+                ncodes: ncodes_build.call(val.map { |n, _| n['ncode'] })
+              }
+            }
+          end
+        return ret.flatten
+      end
+    end
 
     # あらすじを取得する
     def fetch_synopsis(ncode)
@@ -104,6 +146,51 @@ module Narou
         true,
         info[Constants::NAROU_API_STORY]
       ]
+    end
+
+    private
+
+    # フェッチする際に取得可能件数を超えないために分割する。
+    #
+    # 作者毎 (writer.novel_count + 3)
+    # 作者毎に配列に追加し、500を超えるようなら新たな配列に追加していく。
+    #
+    # @params writers 作者一覧
+    #
+    # @return [[id1, id2,..], [id101, id102,..]]
+    #
+    def split_writer_id(writers)
+      # 作者ごとの更新投稿最大値目安。あくまで重みとして扱う。
+      writer_posting_factor = 2
+      # 一回のフェッチで取得できる小説の最大件数。
+      can_fetch_novel_count = Constants::NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX
+      # 配列のグループ番号を示す。１つのグループが埋まるたびにインクリメントされる
+      arr_group_id = 1
+      # 現在追加するグループに何件入っているか示す
+      group_added_count = 0
+
+      # [id, count]
+      # [group_id, id, count]
+      #   [group_id: [group_id, id, count],..]
+      #   [[グループ１], [グループ２],..]
+      ret = writers.map { |writer| [writer.writer_id, writer.novel_count + writer_posting_factor] }
+        .tap { |writers|
+          writers.map! do |id, count|
+            if (count + group_added_count) > can_fetch_novel_count
+              arr_group_id = arr_group_id.next
+              group_added_count = 0
+            end
+            group_added_count = group_added_count + count
+            [
+              arr_group_id,
+              id,
+              count
+            ]
+          end
+        }
+        .group_by(&:first)
+        .map { |arr| arr[1] }
+        .map { |ar| ar.map { |a| a[1] } }
     end
   end
 end

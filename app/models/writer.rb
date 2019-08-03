@@ -9,7 +9,7 @@ class Writer < ApplicationRecord
       return writer if writer
 
       count, result = Narou.fetch_writer_episodes_order_new_post(writer_id)
-      return nil unless result
+      return nil if count == 0
 
       _t, _n, name = result[0].values
 
