@@ -31,12 +31,37 @@ module Narou
       ]
     end
 
+    # 最大500件を引数にエピソード数を取得する
+    #
+    # @params ncodes Array<String> ncode=> /n\d{4}\w{1,3}/
+    #
+    # @return Array<Struct :ncode, :episode_count>
+    #   ncode: DESC
+    def fetch_next_episodes(ncodes)
+      uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_NEXT_EPISODES + ncodes.join('-'))
+      json = Net::HTTP.get(uri)
+      results = JSON.parse(json)
+
+      data = Struct.new(:ncode, :episode_count)
+
+      results
+        .drop(1)
+        .sort { |a, b| b['ncode'] <=> a['ncode'] }
+        .each_with_object([]) do |result, arr|
+          arr << data.new(
+            result[Constants::NAROU_API_NCODE].downcase,
+            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT]
+          )
+      end
+    end
+
     def fetch_writer_info_by_ncode(ncode)
       uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_WRITER + ncode)
       json = Net::HTTP.get(uri)
       result = JSON.parse(json)
 
       return false if (result[0])[Constants::NAROU_API_SEARCH_RESULT_COUNT].zero?
+
       _, info = result
       [
         true,

@@ -10,13 +10,20 @@ module Constants
   QUERY_DEFAULT_BROWSER = '?openExternalBrowser=1'.freeze
 
   # NAROU API
-  ## ncode を指定する
-  NAROU_API_QUERY_FETCH_EPISODE = '?/lim=1&of=t-ga&out=json&ncode='.freeze
+  ## API QUERY 固定値
+  NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX = 500
+  ## API QUERY
+  ### ncode を指定する
+  NAROU_API_QUERY_FETCH_EPISODE = '?lim=1&of=t-ga&out=json&ncode='.freeze
+  NAROU_API_QUERY_FETCH_NEXT_EPISODES = "?lim=#{NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX}&of=n-ga&out=json&ncode=".freeze
   NAROU_API_QUERY_FETCH_WRITER = '?order=ncodedesc&of=u-w&out=json&ncode='
-  ## writer_id を指定する
+  ### writer_id を指定する
   NAROU_API_QUERY_FETCH_WRITER_NEW_EPISODE = '?order=ncodedesc&of=t-n-w&out=json&userid='.freeze
-  NAROU_API_QUERY_FETCH_SYNOPSIS = '?of=s&out=json&ncode='
+  NAROU_API_QUERY_FETCH_SYNOPSIS = '?of=s&out=json&ncode='.freeze
+
+  # API RETURN ATTRIBUTES
   NAROU_API_SEARCH_RESULT_COUNT = 'allcount'.freeze
+  NAROU_API_NCODE = 'ncode'.freeze
   NAROU_API_NOVEL_TITLE = 'title'.freeze
   NAROU_API_WRITER_ID = 'userid'.freeze
   NAROU_API_WRITER_NAME = 'writer'.freeze

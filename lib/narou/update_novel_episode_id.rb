@@ -5,7 +5,7 @@ module Narou::UpdateNovelEpisodeId extend self
 
   class Job
     def run
-      Novel.limit(5).each do |novel|
+      Novel.all.each do |novel|
         novel.update(last_episode_id: novel.last_episode_id - 1)
       end
     end
