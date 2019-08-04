@@ -10,7 +10,7 @@ class UserNotifyNovel < ApplicationRecord
 
   class << self
 
-    # 通知するためのデータ一覧を整形する
+    # 通知するためのデータ一覧を取得する
     #
     # @param [novel_type] 新規投稿: :new_post, 更新投稿: :update_post
     #
@@ -76,12 +76,14 @@ class UserNotifyNovel < ApplicationRecord
       NOTIFY_DATA_ATTRIBUTE_COMMON + NOTIFY_DATA_ATTRIBUTE_UPDATE_POST
     end
 
-    def can_notify_users_id
-      User.find_can_notify_users.map(&:id)
-    end
-
+    # 通知時間内のユーザを対象とした、通知データを取得する
     def notify_data_within_can_notification_time
       where(user_id: can_notify_users_id).order(:user_id, :created_at)
+    end
+
+    # 通知可能時間内のユーザID一覧
+    def can_notify_users_id
+      User.find_can_notify_users.map(&:id)
     end
   end
 end

@@ -5,7 +5,8 @@ module Narou::UpdateWriterNovelCount extend self
 
   class Job
     def run
-      Writer.limit(5).each do |writer|
+      UserCheckWriter.all.each do |ucw|
+        writer = ucw.writer
         writer.update(novel_count: writer.novel_count - 1)
       end
     end

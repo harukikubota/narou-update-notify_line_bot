@@ -12,21 +12,27 @@ module Narou::UpdateWriterNewNovel extend self
     def run
       # 新規投稿小説一覧を取得(内部でレコード作成する)
       new_writer_and_novel_ids = fetch_new_novels(Writer.order(:writer_id))
-      binding.pry
       writer_ids = new_writer_and_novel_ids.map(&:writer_id).uniq
-      novel_notification_target_users = UserCheckWriter(writer_id: writer_ids).order(:user_id)
+      novel_notification_target_users = UserCheckWriter.where(writer_id: writer_ids).order(:user_id)
+      novels_group_by_user =
+        novel_notification_target_users
+          .group_by(&:user_id)
+          .each_pair.inject({}) { |hash, (user_id, ucws)|
+            hash[user_id] =
+              ucws.map { |ucw|
+                new_writer_and_novel_ids
+                  .select { |ids| ids.writer_id == ucw.writer_id }
+                  .map(&:novel_id)
+              }.flatten
+            hash
+          }
+
       # 通知データを作成する
-      # TODO ここから
-      ret = novel_notification_target_users.map do ||
-        UserNotifyNovel.create(
-          novel_id: notify_novel_data.novel_id,
-          user_id: notify_novel_data.user_id,
-          notify_novel_type: :new_post,
-          notify_novel_episode_no: 1
-        )
+      ret = novels_group_by_user.each_pair.map do |user_id, novel_ids|
+        novel_ids.map { |novel_id| create_notify_data(user_id, novel_id) }
       end
 
-      ret.empty? ? no_new_post : some_posts(ret)
+      ret.empty? ? no_new_post : some_posts(ret.flatten)
     end
 
     private
@@ -52,6 +58,15 @@ module Narou::UpdateWriterNewNovel extend self
           end
         end
       ret.flatten
+    end
+
+    def create_notify_data(user_id, novel_id)
+      UserNotifyNovel.create(
+        novel_id: novel_id,
+        user_id: user_id,
+        notify_novel_type: :new_post,
+        notify_novel_episode_no: 1
+      )
     end
 
     def no_new_post
