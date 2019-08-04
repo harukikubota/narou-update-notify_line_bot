@@ -16,16 +16,6 @@ use_separators.each do |sep|
   )
 end
 
-## user_config
-### default value.
-default_user_config = UserConfig.default_record
-
-needs_updating_users = User.where(user_config_id: nil)
-needs_updating_users.each do |user|
-  default_user_config.user_id = user.id
-  default_user_config.save
-  user.update(user_config_id: default_user_config.id)
-end
 ## novel sample
 Novel.build_by_ncode('n2267be')
 

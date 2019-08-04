@@ -44,7 +44,7 @@ class Help < PostbackCommand
 
       #{Constants::Reply::HELP_TITLE_OPERATION}
         更新を通知したいなろう小説のURLを送信します。
-        例：「#{NAROU_NOVEL_URL}n6169dz/」
+        例：「#{Constants::NAROU_NOVEL_URL}n6169dz/」
     MES
   end
 
@@ -56,7 +56,7 @@ class Help < PostbackCommand
 
       #{Constants::Reply::HELP_TITLE_OPERATION}
         ①更新通知を解除したいなろう小説のURLを送信します。
-          例：「#{NAROU_NOVEL_URL}n6169dz/」
+          例：「#{Constants::NAROU_NOVEL_URL}n6169dz/」
         ②「削除確認メッセージ」が表示されますので、「削除する」を選択してください。
     MES
   end
@@ -82,7 +82,7 @@ class Help < PostbackCommand
 
       #{Constants::Reply::HELP_TITLE_OPERATION}
         更新を通知したいなろう作者のマイページURLを送信します。
-        例：「#{NAROU_MYPAGE_URL}474038/」
+        例：「#{Constants::NAROU_MYPAGE_URL}474038/」
     MES
   end
 
@@ -94,7 +94,7 @@ class Help < PostbackCommand
 
       #{Constants::Reply::HELP_TITLE_OPERATION}
         ①更新通知を解除したいなろう作者のマイページURLを送信します。
-          例：「#{NAROU_MYPAGE_URL}474038/」
+          例：「#{Constants::NAROU_MYPAGE_URL}474038/」
         ②「削除確認メッセージ」が表示されますので、「削除する」を選択してください。
     MES
   end
