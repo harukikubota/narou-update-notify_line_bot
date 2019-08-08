@@ -6,11 +6,20 @@ class WriterAdd < TextCommand
   end
 
   def call
-    writer_id = @user_send_text.match(Constants::REG_WRITER_ID).to_s
+    writer_id = extraction_writer_id(@user_send_text)
     add_writer(writer_id)
   end
 
   private
+
+  # 作者マイページURL内の作者IDを抽出する
+  #
+  # @params text テキスト
+  #
+  # @return [writer_id] Integer 作者ID
+  def extraction_writer_id(text)
+    text.match(Constants::TextRegexp::WRITER_ADD).to_s.match(Constants::REG_WRITER_ID).to_i
+  end
 
   def add_writer(writer_id)
     @success = true
@@ -21,7 +30,7 @@ class WriterAdd < TextCommand
       if writer&.save
         link_u_to_w(user.id, writer.id) ? reply_already_registered(writer) : reply_created(writer)
       else
-        unprocessable_entity
+        reply_unprocessable_entity
       end
   end
 

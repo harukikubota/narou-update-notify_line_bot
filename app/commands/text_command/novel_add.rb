@@ -6,11 +6,20 @@ class NovelAdd < TextCommand
   end
 
   def call
-    ncode = @user_send_text.match(Constants::REG_NCODE).to_s
+    ncode = extraction_ncode(@user_send_text)
     add_novel(ncode)
   end
 
   private
+
+  # なろう小説URL内のncodeを抽出する
+  #
+  # @params text テキスト
+  #
+  # @return [ncode] String NCode
+  def extraction_ncode(text)
+    text.match(Constants::TextRegexp::NOVEL_ADD).to_s.match(Constants::REG_NCODE).to_s
+  end
 
   def add_novel(ncode)
     @success = true
