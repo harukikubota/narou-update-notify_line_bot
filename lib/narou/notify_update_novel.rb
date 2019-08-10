@@ -19,8 +19,8 @@ module Narou::NotifyUpdateNovel extend self
         notify_update_novel_to_user(user.line_id, notify_datas_by_one_user)
       end
 
-      # 通知したデータを削除
-      UserNotifyNovel.destroy(notify_datas.map(&:id))
+      # 通知したデータを通知済みにする
+      UserNotifyNovel.mark_as_notified_to(notify_datas)
     end
 
     private

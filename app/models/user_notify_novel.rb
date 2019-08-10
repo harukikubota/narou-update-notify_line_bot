@@ -8,6 +8,9 @@ class UserNotifyNovel < ApplicationRecord
   NOTIFY_DATA_ATTRIBUTE_NEW_POST = %i[writer_name].freeze
   NOTIFY_DATA_ATTRIBUTE_UPDATE_POST = %i[episode_no].freeze
 
+  # １ユーザに対する、一度に通知できるデータの上限
+  NOTIFY_CAN_PER_USER_MAX = 50
+
   class << self
 
     # 通知するためのデータ一覧を取得する
@@ -20,7 +23,7 @@ class UserNotifyNovel < ApplicationRecord
     #   ## 共通
     #     data.id           ID            UserNotifyNovel.id
     #     data.user_id      ユーザID       User.id
-    #     data.ncode        Nコード        /n\d{4}\w{1,3}/
+    #     data.ncode        Nコード        n2267be
     #     data.title        小説のタイトル  Ｒｅ：ゼロから始める異世界生活
     #
     #   ## 新規投稿
@@ -30,19 +33,33 @@ class UserNotifyNovel < ApplicationRecord
     #     data.episode_no   エピソードNo    478
     #
     def build_notify_data(novel_type)
+      notify_datas = notify_data_within_can_notification_time(novel_type)
       case novel_type
       when :new_post
-        build_data_for_new_post
+        build_data_for_new_post(notify_datas)
       when :update_post
-        build_data_for_update_post
+        build_data_for_update_post(notify_datas)
       end
+    end
+
+    # 通知データを通知済みにする
+    #
+    # @params [notify_data] self.build_notify_dataで取得した配列
+    #
+    # @return [chenge_count] 処理件数
+    def mark_as_notified_to(notify_data)
+      ids = notify_data.map(&:id)
+      where(id: ids)
+        .update(
+          notified: true,
+          notified_at: DateTime.now
+        )
     end
 
     private
 
-    def build_data_for_new_post
+    def build_data_for_new_post(notify_datas)
       template = Struct.new(*new_post_attribute)
-      notify_datas = notify_data_within_can_notification_time
       notify_datas.map do |data|
         template.new(
           data.id,
@@ -54,16 +71,15 @@ class UserNotifyNovel < ApplicationRecord
       end
     end
 
-    def build_data_for_update_post
+    def build_data_for_update_post(notify_datas)
       template = Struct.new(*update_post_attribute)
-      notify_datas = notify_data_within_can_notification_time
       notify_datas.map do |data|
         template.new(
           data.id,
           data.user_id,
           data.novel.ncode,
           data.novel.title,
-          data.novel.last_episode_id
+          data.notify_novel_episode_no
         )
       end
     end
@@ -77,8 +93,15 @@ class UserNotifyNovel < ApplicationRecord
     end
 
     # 通知時間内のユーザを対象とした、通知データを取得する
-    def notify_data_within_can_notification_time
-      where(user_id: can_notify_users_id).order(:user_id, :created_at)
+    def notify_data_within_can_notification_time(notify_type)
+      can_notify_users_id.map { |user_id|
+        where(
+          user_id: user_id,
+          notify_novel_type: notify_type,
+          notified: false
+        )
+          .order(:created_at).limit(50)
+      }.flatten
     end
 
     # 通知可能時間内のユーザID一覧
