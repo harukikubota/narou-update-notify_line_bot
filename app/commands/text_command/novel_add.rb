@@ -52,14 +52,12 @@ class NovelAdd < TextCommand
 
   def reply_already_registered(novel)
     message_body = <<~MES.chomp
-      「#{novel.title}」はすでに登録されています。
-      削除しますか？
+      「#{novel.title}」を削除しますか？
     MES
 
     button_ele = ButtonElement.new(message_body, nil, '小説の削除確認')
     message = button_ele
       .add_action(button_action_do_delete(novel.id))
-      .add_action(button_action_no_delete)
 
     LineMessage.build_by_button_message(message)
   end
@@ -86,14 +84,6 @@ class NovelAdd < TextCommand
       type: 'postback',
       label: '削除する',
       data: "action=novel_delete&novel_id=#{novel_id}"
-    }
-  end
-
-  def button_action_no_delete
-    {
-      type: 'postback',
-      label: '削除しない',
-      data: 'action=novel_delete&novel_id=0'
     }
   end
 end

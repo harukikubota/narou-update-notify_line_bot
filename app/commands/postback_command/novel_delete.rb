@@ -1,3 +1,5 @@
+require_relative '../../../lib/line_request/line_message/element/button_element.rb'
+
 class NovelDelete < PostbackCommand
   def initialize(request_info)
     super
@@ -5,8 +7,6 @@ class NovelDelete < PostbackCommand
 
   def call
     novel_id = @params['novel_id']
-    return self && @success = true if novel_id == '0'
-
     novel = Novel.find(novel_id)
 
     @message =
@@ -15,7 +15,6 @@ class NovelDelete < PostbackCommand
       else
         reply_already_deleted(novel.title)
       end
-    binding.pry
     @success = true
   end
 
