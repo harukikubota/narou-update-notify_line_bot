@@ -4,23 +4,14 @@ class NovelList < PostbackCommand
   end
 
   def call
-    @message = user.novels.count.zero? ? reply_no_item : reply_registered_list(user.novels)
+    @message = user.novels.count.zero? ? reply_no_item : reply_registered_list
     @success = true
   end
 
   private
 
-  def reply_registered_list(novels)
-    # タイトル、作者名、最終更新日(YY/MM/DD)、エピソード数、novel_url(削除送信用、ページ表示用)
-
-
-
-
-
-    #list = novels.map(&:title).map.with_index(1) { |title, idx| list_row_and_novel(idx, title) }
-    #message_list = list.inject("") { |str, mes| str += mes }
-    #message = "#{Constants::Reply::REPLY_MESSAGE_LIST_HEAD}#{message_list}"
-    #LineMessage.build_by_single_message(message)
+  def reply_registered_list
+    user.novels.each_slice(10).map { |novels| carousel_template(build_bubbles(novels)) }
   end
 
   def reply_no_item
@@ -33,17 +24,105 @@ class NovelList < PostbackCommand
     LineMessage.build_by_single_message(message)
   end
 
-  def build_bubbles(datas)
-    datas.map do |data|
-      novel_url = "#{Constants::NAROU_NOVEL_URL}/#{data.ncode}/#{data.episode_no}/#{Constants::QUERY_DEFAULT_BROWSER}"
-      header = header_title(action_do_read(data.title, novel_url))
-      body = body_content(data.episode_no)
-      notify_message_bubble(header, body)
+  def build_bubbles(novels)
+    novels.map do |novel|
+      novel_plane_url = "#{Constants::NAROU_NOVEL_URL}#{novel.ncode}/#{novel.last_episode_id}/"
+      novel_open_url = "#{novel_plane_url}/#{Constants::QUERY_DEFAULT_BROWSER}"
+      writer_mypage_url = "#{Constants::NAROU_MYPAGE_URL}#{novel.writer.writer_id}/#{Constants::QUERY_DEFAULT_BROWSER}"
+
+      header = header_title(action_do_read(novel_open_url), novel.title)
+      box_writer_link = make_box_writer_info(novel.writer.name, writer_mypage_url)
+      box_episode_info = make_box_episode_info(novel)
+      body = body_content(box_writer_link, box_episode_info)
+      footer = footer_button(action_send_narou_link(novel_plane_url))
+      message_bubble(header, body, footer)
     end
   end
 
+  # ----------------- header ------------------- #
   # メッセージのヘッダー
-  def header_title(action)
+  def header_title(action, novel_title)
+    {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'text',
+          text: novel_title,
+          color: Constants::MessageStyle::Color::URL_LINK
+        }
+      ],
+      action: action
+    }
+  end
+
+    # 小説リンクのアクションボタン
+    def action_do_read(novel_url)
+      {
+        type: 'uri',
+        uri: novel_url
+      }
+    end
+  # ----------------- header ------------------- #
+
+  # ------------------ body -------------------- #
+  def body_content(box_writer_link, box_episode_info)
+    {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        box_writer_link,
+        box_episode_info
+      ]
+    }
+  end
+
+  def make_box_writer_info(writer_name, writer_mypage_url)
+    {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'text',
+          text: writer_name,
+          color: Constants::MessageStyle::Color::URL_LINK,
+          align: 'center',
+          margin: 'xl'
+        }
+      ],
+      action: {
+        type: 'uri',
+        uri: writer_mypage_url
+      }
+    }
+  end
+
+  def make_box_episode_info(novel)
+    last_update_date = novel.updated_at.strftime('%y/%m/%d')
+    {
+      type: 'box',
+      layout: 'horizontal',
+      contents: [
+        {
+          type: 'text',
+          text: "最終更新日 #{last_update_date}",
+          align: 'center',
+          wrap: true
+        },
+        {
+          type: 'text',
+          text: "最新話 #{novel.last_episode_id}",
+          color: Constants::MessageStyle::Color::EPISODE_NO,
+          align: 'center',
+          gravity: 'center'
+        }
+      ]
+    }
+  end
+  # ------------------ body -------------------- #
+
+  # ----------------- footer ------------------- #
+  def footer_button(action)
     {
       type: 'box',
       layout: 'vertical',
@@ -56,50 +135,39 @@ class NovelList < PostbackCommand
     }
   end
 
-  def body_content(novel)
-    writer_mypage_url = "#{Constants::NAROU_MYPAGE_URL}#{writer.writer_id}/"
-    last_update_date = novel.updated_at.strftime('%y/%m/%d')
-
+  def action_send_narou_link(novel_url)
     {
-      type: 'box',
-      layout: 'vertical',
-      contents: [
-        {
-          type: 'button',
-          action: {
-            type: 'uri',
-            label: novel.writer.name,
-            uri: "#{writer_mypage_url}#{Constants::QUERY_DEFAULT_BROWSER}"
-          }
-        },
-        {
-          type: 'text',
-          text: "最終更新日 #{last_update_date}"
-        },
-        {
-          type: 'text',
-          text: "第#{novel_episode_id}話",
-          color: Constants::MessageStyle::Color::EPISODE_NO
-        }
-      ]
+      type: 'message',
+      label: '削除する',
+      text: novel_url
+    }
+  end
+  # ----------------- footer ------------------- #
+
+  # ----------------- styles ------------------- #
+  def styles
+    {
+      body: separator_config,
+      footer: separator_config
     }
   end
 
-  # 小説リンクのアクションボタン
-  def action_do_read(novel_title, novel_url)
+  def separator_config
     {
-      type: 'uri',
-      label: novel_title,
-      uri: novel_url
+      separator: true,
+      separatorColor: '#888888'
     }
   end
+  # ----------------- styles ------------------- #
 
   # メッセージテンプレート １件ごとのバブル
-  def message_bubble(header, body)
+  def message_bubble(header, body, footer)
     {
       type: 'bubble',
       header: header,
-      body: body
+      body: body,
+      footer: footer,
+      styles: styles
     }
   end
 

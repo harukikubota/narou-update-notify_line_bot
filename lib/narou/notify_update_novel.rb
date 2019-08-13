@@ -36,7 +36,7 @@ module Narou::NotifyUpdateNovel extend self
 
     def build_bubbles(datas)
       datas.map do |data|
-        novel_url = "#{Constants::NAROU_NOVEL_URL}/#{data.ncode}/#{data.episode_no}/#{Constants::QUERY_DEFAULT_BROWSER}"
+        novel_url = "#{Constants::NAROU_NOVEL_URL}#{data.ncode}/#{data.episode_no}/#{Constants::QUERY_DEFAULT_BROWSER}"
         header = header_title(action_do_read(data.title, novel_url))
         body = body_content(data.episode_no)
         notify_message_bubble(header, body)
