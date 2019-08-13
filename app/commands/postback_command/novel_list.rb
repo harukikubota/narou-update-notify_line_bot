@@ -98,7 +98,7 @@ class NovelList < PostbackCommand
   end
 
   def make_box_episode_info(novel)
-    last_update_date = novel.updated_at.strftime('%y/%m/%d')
+    last_update_date = novel.posted_at.strftime('%y/%m/%d')
     {
       type: 'box',
       layout: 'horizontal',

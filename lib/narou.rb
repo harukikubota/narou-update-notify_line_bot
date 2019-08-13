@@ -27,7 +27,8 @@ module Narou
       [
         true,
         info[Constants::NAROU_API_NOVEL_TITLE],
-        info[Constants::NAROU_API_NOVEL_EPISODE_COUNT]
+        info[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
+        DateTime.parse(info[Constants::NAROU_API_POSTED_AT])
       ]
     end
 
