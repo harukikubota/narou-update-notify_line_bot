@@ -4,20 +4,14 @@ class WriterList < PostbackCommand
   end
 
   def call
-    @message = user.writers.count.zero? ? reply_no_item : reply_registered_list(user.writers)
+    @message = user.writers.count.zero? ? reply_no_item : reply_registered_list
     @success = true
   end
 
   private
 
-  def reply_registered_list(writers)
-    list = writers.map(&:name)
-      .map.with_index(1) { |name, idx| name_list_with_index(idx, name) }
-
-    message_list = list.inject("") { |str, mes| str += mes }
-
-    message = "#{Constants::Reply::REPLY_MESSAGE_LIST_HEAD}#{message_list}"
-    LineMessage.build_by_single_message(message)
+  def reply_registered_list
+    user.writers.each_slice(10).map { |writers| carousel_template(build_bubbles(writers)) }
   end
 
   def reply_no_item
@@ -30,7 +24,17 @@ class WriterList < PostbackCommand
     LineMessage.build_by_single_message(message)
   end
 
-  def name_list_with_index(index, name)
-    "\n\n#{index}. #{name}"
+  def build_bubbles(writers)
+    writers.map do |writer|
+      writer_plane_url = "#{Constants::NAROU_MYPAGE_URL}#{writer.writer_id}/"
+      writer_open_url = "#{writer_plane_url}/#{Constants::QUERY_DEFAULT_BROWSER}"
+
+      header = header_title(action_do_read(writer_open_url), writer.name)
+      box_writer_post_count = make_box_writer_post_count(writer.novel_count)
+      box_user_regist_novel = make_box_user_regist_novel(writer)
+      body = body_content(box_writer_link, box_episode_info)
+      footer = footer_button(action_send_narou_link(writer_plane_url))
+      message_bubble(header, body, footer)
+    end
   end
 end
