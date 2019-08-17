@@ -16,9 +16,9 @@ class WriterAdd < TextCommand
   #
   # @params text テキスト
   #
-  # @return [writer_id] Integer 作者ID
+  # @return [writer_id] String 作者ID
   def extraction_writer_id(text)
-    text.match(Constants::TextRegexp::WRITER_ADD).to_s.match(Constants::REG_WRITER_ID).to_i
+    text.match(Constants::TextRegexp::WRITER_ADD).to_s.match(Constants::REG_WRITER_ID).to_s
   end
 
   def add_writer(writer_id)
@@ -59,7 +59,6 @@ class WriterAdd < TextCommand
     button_ele = ButtonElement.new(message_body, nil, '作者の削除確認')
     message = button_ele
       .add_action(button_action_do_delete(writer.id))
-      .add_action(button_action_no_delete)
 
     LineMessage.build_by_button_message(message)
   end
@@ -86,14 +85,6 @@ class WriterAdd < TextCommand
       type: 'postback',
       label: '削除する',
       data: "action=writer_delete&writer_id=#{writer_id}"
-    }
-  end
-
-  def button_action_no_delete
-    {
-      type: 'postback',
-      label: '削除しない',
-      data: 'action=writer_delete&writer_id=0'
     }
   end
 end
