@@ -13,7 +13,7 @@ module NarouModule
 
       url += "#{episode_id}/" if episode_id
 
-      url += "/#{Constants::QUERY_DEFAULT_BROWSER}" if open_browser
+      url += "#{Constants::QUERY_DEFAULT_BROWSER}" if open_browser
 
       url
     end
@@ -24,10 +24,10 @@ module NarouModule
     #         [open_browser] boolean ブラウザで開くか?
     #
     # @return [url] 作者マイページのURL
-    def writer_mypage_url(writer_id, open_browser)
+    def writer_mypage_url(writer_id, open_browser = false)
       url = "#{Constants::NAROU_MYPAGE_URL}#{writer_id}/"
 
-      url += "/#{Constants::QUERY_DEFAULT_BROWSER}" if open_browser
+      url += "#{Constants::QUERY_DEFAULT_BROWSER}" if open_browser
 
       url
     end

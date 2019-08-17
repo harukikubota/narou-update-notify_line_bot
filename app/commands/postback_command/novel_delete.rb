@@ -24,10 +24,8 @@ class NovelDelete < PostbackCommand
       削除を取り消すには下のボタンを押してください。
     MES
 
-    narou_url = "#{Constants::NAROU_NOVEL_URL}#{novel.ncode}/"
-
     button_ele = ButtonElement.new(message_body, nil, '小説の削除終了')
-    button_ele.add_action(button_action_undo_delete(narou_url))
+    button_ele.add_action(button_action_undo_delete(narou_url(novel.ncode)))
 
     LineMessage.build_by_button_message(button_ele)
   end
