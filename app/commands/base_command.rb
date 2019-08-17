@@ -7,6 +7,7 @@ class BaseCommand
   include CommandCommon
   include ConfigModule
   include MessageBuilder
+  include NarouModule
 
   def call
     raise Constants::NO_OVERRIDE_ERROR

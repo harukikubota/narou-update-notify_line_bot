@@ -34,16 +34,16 @@ module Narou
 
     # 最大500件を引数にエピソード数を取得する
     #
-    # @params ncodes Array<String> ncode=> /n\d{4}\w{1,3}/
+    # @params ncodes Array<String>
     #
-    # @return Array<Struct :ncode, :episode_count>
+    # @return Array<ncode<String>, episode_no<Integer>, posted_at<DateTime>>
     #   ncode: DESC
     def fetch_next_episodes(ncodes)
       uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_NEXT_EPISODES + ncodes.join('-'))
       json = Net::HTTP.get(uri)
       results = JSON.parse(json)
 
-      data = Struct.new(:ncode, :episode_count)
+      data = Struct.new(:ncode, :episode_no, :posted_at)
 
       results
         .drop(1)
@@ -51,7 +51,8 @@ module Narou
         .each_with_object([]) do |result, arr|
           arr << data.new(
             result[Constants::NAROU_API_NCODE].downcase,
-            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT]
+            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
+            DateTime.parse(result[Constants::NAROU_API_POSTED_AT])
           )
       end
     end

@@ -24,5 +24,21 @@ class Novel < ApplicationRecord
         posted_at: posted_at
       )
     end
+
+    # 指定した NovelId の レコードを対象に、エピソード新規投稿として更新する
+    #
+    # @params [ncode] 更新がある小説のNcode
+    #         [posted_at] <DateTime> 投稿日時
+    #
+    # @return [novel] 更新したレコード
+    def update_new_post_novels(ncode, posted_at)
+      novel = find_by_ncode(ncode)
+      novel.update(
+        last_episode_id: novel.last_episode_id.next,
+        posted_at: posted_at
+      )
+
+      novel
+    end
   end
 end
