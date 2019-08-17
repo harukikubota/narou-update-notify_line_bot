@@ -26,12 +26,12 @@ class NovelList < PostbackCommand
 
   def build_bubbles(novels)
     novels.map do |novel|
-      novel_plane_url = "#{Constants::NAROU_NOVEL_URL}#{novel.ncode}/#{novel.last_episode_id}/"
-      novel_open_url = "#{novel_plane_url}/#{Constants::QUERY_DEFAULT_BROWSER}"
-      writer_mypage_url = "#{Constants::NAROU_MYPAGE_URL}#{novel.writer.writer_id}/#{Constants::QUERY_DEFAULT_BROWSER}"
+      novel_plane_url = narou_url(novel.ncode, novel.last_episode_id)
+      novel_open_url = narou_url(novel.ncode, novel.last_episode_id, true)
+      writer_open_mypage_url = writer_mypage_url(novel.writer.writer_id, true)
 
       header = header_title(action_do_read(novel_open_url), novel.title)
-      box_writer_link = make_box_writer_info(novel.writer.name, writer_mypage_url)
+      box_writer_link = make_box_writer_info(novel.writer.name, writer_open_mypage_url)
       box_episode_info = make_box_episode_info(novel)
       body = body_content(box_writer_link, box_episode_info)
       footer = footer_button(action_send_narou_link(novel_plane_url))
@@ -155,7 +155,7 @@ class NovelList < PostbackCommand
   def separator_config
     {
       separator: true,
-      separatorColor: '#888888'
+      separatorColor: Constants::MessageStyle::Color::SEPARATOR
     }
   end
   # ----------------- styles ------------------- #
