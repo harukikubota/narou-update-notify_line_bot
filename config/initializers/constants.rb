@@ -15,7 +15,7 @@ module Constants
   ## API QUERY
   ### ncode を指定する
   NAROU_API_QUERY_FETCH_EPISODE = '?lim=1&of=t-ga-gl&out=json&ncode='.freeze
-  NAROU_API_QUERY_FETCH_NEXT_EPISODES = "?lim=#{NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX}&of=n-ga&out=json&ncode=".freeze
+  NAROU_API_QUERY_FETCH_NEXT_EPISODES = "?lim=#{NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX}&of=n-ga-gl&out=json&ncode=".freeze
   NAROU_API_QUERY_FETCH_WRITER = '?order=ncodedesc&of=u-w&out=json&ncode='
   ### writer_id を指定する
   NAROU_API_QUERY_FETCH_WRITER_NEW_EPISODE = "?lim=#{NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX}&order=ncodedesc&of=t-n-w&out=json&userid=".freeze
