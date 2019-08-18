@@ -48,7 +48,32 @@ module Narou::UpdateNovelNewEpisode extend self
           .map(&:first)
       end
 
-      ret.flatten
+      ret.flatten!
+      # エピソードが減っていれば異常時処理
+      decreasing_novel_episode(ret)
+
+      ret
+    end
+
+    def decreasing_novel_episode(fetch_datas)
+      fetch_datas.each do |fetch_data|
+        novel = Novel.find_by_ncode(fetch_data.ncode)
+        reduce_count = fetch_data.episode_no - novel.last_episode_id
+        # 減少している場合
+        if reduce_count < 0
+          abnormal_process(novel, reduce_count.abs)
+        end
+      end
+    end
+
+    def abnormal_process(novel, reduce_count)
+      novel.update(last_episode_id: novel.last_episode_id - reduce_count)
+      proc_hash = SecureRandom.urlsafe_base64(8)
+      title = '小説のエピソードIDに減少発生'
+      text = "小説名:#{novel.title}\n減少数 #{reduce_count}\n実行ハッシュ #{proc_hash}"
+      message = Slack.message_completion_ob_abnormal_processing(title, text)
+      Slack.notify(message)
+      comp_abnormal_process(proc_hash, reduce_count)
     end
 
     def no_updates
@@ -57,6 +82,10 @@ module Narou::UpdateNovelNewEpisode extend self
 
     def some_updates(items)
       Rails.logger.info("小説更新: #{items.count}件の通知があります。")
+    end
+
+    def comp_abnormal_process(proc_hash, reduce_count)
+      Rails.logger.info("小説更新: 異常時処理を実行しました。減少数#{reduce_count}, #{proc_hash}")
     end
   end
 end

@@ -52,7 +52,7 @@ module Narou::UpdateWriterNewNovel extend self
               next
             # 投稿数が減っている？
             elsif new_novel_count < 0
-              abnormal_process(writer, new_novel_count)
+              abnormal_process(writer, new_novel_count.abs)
               next
             end
 
@@ -78,7 +78,7 @@ module Narou::UpdateWriterNewNovel extend self
     end
 
     def abnormal_process(writer, reduce_count)
-      writer.update(novel_count: writer.novel_count + reduce_count)
+      writer.update(novel_count: writer.novel_count - reduce_count)
       proc_hash = SecureRandom.urlsafe_base64(8)
       title = '作者投稿数に減少発生'
       text = "作者名:#{writer.name}\n減少数 #{reduce_count}\n実行ハッシュ #{proc_hash}"
