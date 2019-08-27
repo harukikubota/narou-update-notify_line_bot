@@ -28,7 +28,7 @@ module Narou
         true,
         info[Constants::NAROU_API_NOVEL_TITLE],
         info[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
-        DateTime.parse(info[Constants::NAROU_API_POSTED_AT])
+        parse_api_datestring_to_date_time(info[Constants::NAROU_API_POSTED_AT])
       ]
     end
 
@@ -52,7 +52,7 @@ module Narou
           arr << data.new(
             result[Constants::NAROU_API_NCODE].downcase,
             result[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
-            DateTime.parse(result[Constants::NAROU_API_POSTED_AT])
+            parse_api_datestring_to_date_time(result[Constants::NAROU_API_POSTED_AT])
           )
       end
     end
@@ -193,6 +193,11 @@ module Narou
         .group_by(&:first)
         .map { |arr| arr[1] }
         .map { |ar| ar.map { |a| a[1] } }
+    end
+
+    # APIで取得した日時をDateTimeクラスオブジェクトに変換する
+    def parse_api_datestring_to_date_time(date_str)
+      DateTime.parse("#{date_str} +09:00")
     end
   end
 end
