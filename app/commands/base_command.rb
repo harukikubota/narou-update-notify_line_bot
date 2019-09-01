@@ -2,17 +2,23 @@ require 'active_support/core_ext/class/subclasses'
 
 # Commandsの基底クラス
 class BaseCommand
-  attr_reader :message
-
   include CommandCommon
   include ConfigModule
   include MessageBuilder
+  include NarouModule
 
+  # 固有処理
   def call
     raise Constants::NO_OVERRIDE_ERROR
   end
 
-  # Commandの実行結果
+  # 処理後にAPI通信をまとめて行う
+  def after_call
+    mes_ret = @message && send_message(@message)
+    menu_ret = @rich_menu_id && change_rich_menu(@rich_menu_id)
+  end
+
+  # 各Command.call の実行結果
   # @success = true
   def success?
     @success
@@ -35,5 +41,21 @@ class BaseCommand
   def initialize(request_info)
     @request_info = request_info
     @success = false
+  end
+
+  private
+
+  # ユーザへリプライを送信する
+  #
+  # @params [message] リプライメッセージ
+  def reply_message(message)
+    client.reply_message(@request_info.user_info.reply_token, message)
+  end
+
+  # ユーザのメニューを切り替える
+  #
+  # @params [rich_menu_id]
+  def change_rich_menu(rich_menu_id)
+    client.link_user_rich_menu(user.line_id, rich_menu_id)
   end
 end

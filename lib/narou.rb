@@ -27,22 +27,23 @@ module Narou
       [
         true,
         info[Constants::NAROU_API_NOVEL_TITLE],
-        info[Constants::NAROU_API_NOVEL_EPISODE_COUNT]
+        info[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
+        parse_api_datestring_to_date_time(info[Constants::NAROU_API_POSTED_AT])
       ]
     end
 
     # 最大500件を引数にエピソード数を取得する
     #
-    # @params ncodes Array<String> ncode=> /n\d{4}\w{1,3}/
+    # @params ncodes Array<String>
     #
-    # @return Array<Struct :ncode, :episode_count>
+    # @return Array<ncode<String>, episode_no<Integer>, posted_at<DateTime>>
     #   ncode: DESC
     def fetch_next_episodes(ncodes)
       uri = URI.parse(Constants::NAROU_API_URL + Constants::NAROU_API_QUERY_FETCH_NEXT_EPISODES + ncodes.join('-'))
       json = Net::HTTP.get(uri)
       results = JSON.parse(json)
 
-      data = Struct.new(:ncode, :episode_count)
+      data = Struct.new(:ncode, :episode_no, :posted_at)
 
       results
         .drop(1)
@@ -50,7 +51,8 @@ module Narou
         .each_with_object([]) do |result, arr|
           arr << data.new(
             result[Constants::NAROU_API_NCODE].downcase,
-            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT]
+            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
+            parse_api_datestring_to_date_time(result[Constants::NAROU_API_POSTED_AT])
           )
       end
     end
@@ -191,6 +193,11 @@ module Narou
         .group_by(&:first)
         .map { |arr| arr[1] }
         .map { |ar| ar.map { |a| a[1] } }
+    end
+
+    # APIで取得した日時をDateTimeクラスオブジェクトに変換する
+    def parse_api_datestring_to_date_time(date_str)
+      DateTime.parse("#{date_str} +09:00")
     end
   end
 end

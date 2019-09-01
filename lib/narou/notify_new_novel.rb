@@ -18,8 +18,8 @@ module Narou::NotifyNewNovel extend self
         notify_update_novel_to_user(user.line_id, notify_datas_by_one_user)
       end
 
-      # 通知したデータを削除
-      UserNotifyNovel.destroy(notify_datas.map(&:id))
+      # 通知したデータを通知済みにする
+      UserNotifyNovel.mark_as_notified_to(notify_datas)
     end
 
     private
@@ -43,16 +43,26 @@ module Narou::NotifyNewNovel extend self
     def build_columns(datas)
       datas.map do |data|
         column = CarouselColumn.new(data.title, data.writer_name)
-        novel_url = "#{Constants::NAROU_NOVEL_URL}/#{data.ncode}/#{Constants::QUERY_DEFAULT_BROWSER}"
-        column.add_action(action(novel_url))
+        novel_plane_url = "#{Constants::NAROU_NOVEL_URL}#{data.ncode}/"
+        to_open_novel_url = "#{novel_plane_url}#{Constants::QUERY_DEFAULT_BROWSER}"
+        column.add_action(action_read_novel(to_open_novel_url))
+          .add_action(action_novel_add(novel_plane_url))
       end
     end
 
-    def action(novel_url)
+    def action_read_novel(novel_url)
       {
         "type": 'uri',
         "label": '読む',
         "uri": novel_url
+      }
+    end
+
+    def action_novel_add(novel_url)
+      {
+        "type": 'message',
+        "label": '小説を登録する',
+        "text": novel_url
       }
     end
 

@@ -66,4 +66,17 @@ class User < ApplicationRecord
     ).first
     (ret.time_range_start)..(ret.time_range_end)
   end
+
+  # 指定した作者IDで、ユーザが登録している小説一覧を取得する
+  # @params [writer_id] 作者ID
+  #
+  # @return [novels] 小説一覧
+  def regist_novel_list_by_writer_id(writer_id)
+    Novel
+      .joins(:user_check_novels)
+      .joins(:writer)
+      .where(
+        novels: { writer_id: writer_id }, user_check_novels: { user_id: id }
+      )
+  end
 end

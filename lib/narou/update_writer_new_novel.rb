@@ -46,7 +46,15 @@ module Narou::UpdateWriterNewNovel extend self
           writer_data.each_pair do |writer_id, data|
             writer = Writer.find_by_writer_id(writer_id)
             new_novel_count = data[:count] - writer.novel_count
-            next if new_novel_count.zero?
+
+            # 更新なし？
+            if new_novel_count.zero?
+              next
+            # 投稿数が減っている？
+            elsif new_novel_count < 0
+              abnormal_process(writer, new_novel_count.abs)
+              next
+            end
 
             new_novel_ncodes =
               data[:ncodes].to_a.take(new_novel_count).map { |h| h[:ncode] }
@@ -69,12 +77,26 @@ module Narou::UpdateWriterNewNovel extend self
       )
     end
 
+    def abnormal_process(writer, reduce_count)
+      writer.update(novel_count: writer.novel_count - reduce_count)
+      proc_hash = SecureRandom.urlsafe_base64(8)
+      title = '作者投稿数に減少発生'
+      text = "作者名:#{writer.name}\n減少数 #{reduce_count}\n実行ハッシュ #{proc_hash}"
+      message = Slack.message_completion_ob_abnormal_processing(title, text)
+      Slack.notify(message)
+      comp_abnormal_process(proc_hash, reduce_count)
+    end
+
     def no_new_post
       Rails.logger.info('新規投稿: ありませんでした。')
     end
 
     def some_posts(items)
       Rails.logger.info("新規投稿: #{items.count}件の通知があります。")
+    end
+
+    def comp_abnormal_process(proc_hash, reduce_count)
+      Rails.logger.info("新規投稿: 異常時処理を実行しました。減少数#{reduce_count}, #{proc_hash}")
     end
   end
 end

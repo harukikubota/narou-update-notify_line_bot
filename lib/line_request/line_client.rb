@@ -6,4 +6,9 @@ class LineClient
       config.channel_token = ENV['LINE_CHANNEL_TOKEN']
     end
   end
+
+  # @return
+  #   [:ok] 処理正常終了
+  #   [:bad_message] メッセージにエラーあり
+  #   [:api_disconnection] LINEAPIサーバ不通
 end

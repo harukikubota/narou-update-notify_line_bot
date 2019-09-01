@@ -26,11 +26,6 @@ class HomeController < ApplicationController
     command.call
 
     if command.success?
-      res = client.reply_message(request_info.user_info.reply_token, command.message)
-      if res.code != '200'
-        logger.error(res.body)
-        head :bad_request
-      end
       head :ok
     else
       logger.error('処理失敗')
