@@ -23,7 +23,7 @@ class NovelAdd < TextCommand
 
   def add_novel(ncode)
     @success = true
-    return self && regist_limit_over if regist_limit_over?
+    return self && regist_limit_over if regist_limit_over?(ncode)
 
     novel = Novel.build_by_ncode(ncode)
     @message =
@@ -38,8 +38,10 @@ class NovelAdd < TextCommand
     @message = reply_regist_limit_over
   end
 
-  def regist_limit_over?
-    UserCheckNovel.where(user_id: user.id).count == user.regist_max
+  def regist_limit_over?(ncode)
+    binding.pry
+    user.novels.any? { |novel| novel.ncode == ncode } &&
+      UserCheckNovel.where(user_id: user.id).count == user.regist_max
   end
 
   def link_u_to_n(user_id, novel_id)
