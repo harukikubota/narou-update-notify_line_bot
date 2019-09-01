@@ -14,7 +14,7 @@ class BaseCommand
 
   # 処理後にAPI通信をまとめて行う
   def after_call
-    mes_ret = @message && send_message(@message)
+    mes_ret = @message && reply_message(@message)
     menu_ret = @rich_menu_id && change_rich_menu(@rich_menu_id)
   end
 

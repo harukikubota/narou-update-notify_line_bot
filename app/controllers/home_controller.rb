@@ -26,6 +26,7 @@ class HomeController < ApplicationController
     command.call
 
     if command.success?
+      command.after_call
       head :ok
     else
       logger.error('処理失敗')

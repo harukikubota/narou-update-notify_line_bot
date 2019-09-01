@@ -39,9 +39,8 @@ class NovelAdd < TextCommand
   end
 
   def regist_limit_over?(ncode)
-    binding.pry
-    user.novels.any? { |novel| novel.ncode == ncode } &&
-      UserCheckNovel.where(user_id: user.id).count == user.regist_max
+    UserCheckNovel.where(user_id: user.id).count == user.regist_max &&
+      user.novels.none? { |novel| novel.ncode == ncode }
   end
 
   def link_u_to_n(user_id, novel_id)
