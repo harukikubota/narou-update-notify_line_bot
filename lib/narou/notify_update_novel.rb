@@ -31,7 +31,17 @@ module Narou::NotifyUpdateNovel extend self
         bubbles = build_bubbles(notify_data_max_10)
         carousel_template(bubbles, notify_datas.count)
       end
-      client.push_message(line_id, messages)
+      res = client.push_message(line_id, messages)
+      debug(res, messages, line_id)
+    end
+
+    def debug(res, messages, id)
+      Rails.logger.info('-------------start--------------')
+      Rails.logger.info("id = #{id}")
+      Rails.logger.info("messages = #{messages}")
+      Rails.logger.info("res.code = #{res.code}")
+      Rails.logger.info("res.body = #{res.body}")
+      Rails.logger.info('-------------end--------------')
     end
 
     def build_bubbles(datas)
