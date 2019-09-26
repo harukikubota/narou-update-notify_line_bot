@@ -43,18 +43,29 @@ module Narou
       json = Net::HTTP.get(uri)
       results = JSON.parse(json)
 
-      data = Struct.new(:ncode, :episode_no, :posted_at)
+      data = Struct.new(:ncode, :episode_no, :posted_at, :deleted)
 
-      results
-        .drop(1)
-        .sort { |a, b| b['ncode'] <=> a['ncode'] }
-        .each_with_object([]) do |result, arr|
-          arr << data.new(
-            result[Constants::NAROU_API_NCODE].downcase,
-            result[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
-            parse_api_datestring_to_date_time(result[Constants::NAROU_API_POSTED_AT])
-          )
+      shaped_results =
+        results
+          .drop(1)
+          .sort { |a, b| b['ncode'] <=> a['ncode'] }
+          .each_with_object([]) do |result, arr|
+            arr << data.new(
+              result[Constants::NAROU_API_NCODE].downcase,
+              result[Constants::NAROU_API_NOVEL_EPISODE_COUNT],
+              parse_api_datestring_to_date_time(result[Constants::NAROU_API_POSTED_AT]),
+              false
+            )
       end
+
+      # 入力数と取得件数が同じならリターン
+      return shaped_results if shaped_results.count == ncodes.count
+
+      api_not_have_novels_ncode = ncodes - shaped_results.map(&:ncode)
+
+      api_not_have_novels_ncode.each {|ncode| shaped_results << data.new(ncode, 0, nil, true)}
+
+      shaped_results.sort { |a, b| b['ncode'] <=> a['ncode'] }
     end
 
     def fetch_writer_info_by_ncode(ncode)

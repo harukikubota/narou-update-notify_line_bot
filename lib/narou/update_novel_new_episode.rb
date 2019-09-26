@@ -38,7 +38,7 @@ module Narou::UpdateNovelNewEpisode extend self
     #   [episode_no] Integer 最新話のエピソードID
     #   [posted_at] DateTime 投稿日時
     def fetch_has_next_episode_novels
-      novels = Novel.order(ncode: :DESC)
+      novels = Novel.all_effective_novels
       datas = novels.each_slice(Constants::NAROU_API_QUERY_ATTRIBUTE_LIMIT_MAX)
       ret = datas.each_with_object([]) do |novels_data, arr|
         fetch_datas = Narou.fetch_next_episodes(novels_data.map(&:ncode))
@@ -56,14 +56,22 @@ module Narou::UpdateNovelNewEpisode extend self
     end
 
     def decreasing_novel_episode(fetch_datas)
+      @deleted_novels = []
+
       fetch_datas.each do |fetch_data|
         novel = Novel.find_by_ncode(fetch_data.ncode)
         reduce_count = fetch_data.episode_no - novel.last_episode_id
+
+        # 小説が削除されている場合
+        if fetch_data.deleted
+          @deleted_novels << novel.delete
         # 減少している場合
-        if reduce_count < 0
+        elsif reduce_count < 0
           abnormal_process(novel, reduce_count.abs)
         end
       end
+
+      novels_delete if @deleted_novels.any?
     end
 
     def abnormal_process(novel, reduce_count)
@@ -74,6 +82,13 @@ module Narou::UpdateNovelNewEpisode extend self
       message = Slack.message_completion_ob_abnormal_processing(title, text)
       Slack.notify(message)
       comp_abnormal_process(proc_hash, reduce_count)
+    end
+
+    def novels_delete
+      @deleted_novels.each do |novel|
+        UserCheckNovel.unlink_novel_all(novel.id)
+        novel.delete
+      end
     end
 
     def no_updates

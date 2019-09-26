@@ -8,7 +8,7 @@ class Novel < ApplicationRecord
 
   class << self
     def build_by_ncode(ncode)
-      novel = find_by_ncode(ncode)
+      novel = where(ncode: ncode, deleted: false).first
       return novel if novel
 
       ret, title, last_episode_id, posted_at = Narou.fetch_episode(ncode)
@@ -23,6 +23,13 @@ class Novel < ApplicationRecord
         last_episode_id: last_episode_id,
         posted_at: posted_at
       )
+    end
+
+    # 有効な小説一覧を、ncode降順で取得する
+    #
+    # @return [Array<Novel>]
+    def all_effective_novels
+      where(deleted: false).order(ncode: :DESC)
     end
 
     # 指定した NovelId の レコードを対象に、エピソード新規投稿として更新する
@@ -40,5 +47,15 @@ class Novel < ApplicationRecord
 
       novel
     end
+  end
+
+  # なろうAPIサーバから削除されている場合に呼び出す.
+  def delete
+    update!(
+      deleted: true,
+      deleted_at: DateTime.now
+    )
+
+    self
   end
 end

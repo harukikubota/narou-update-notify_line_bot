@@ -29,6 +29,11 @@ class UserCheckNovel < ApplicationRecord
       end
     end
 
+    # 指定した小説との全ての紐付けを解除する
+    def unlink_novel_all(novel_id)
+      where(novel_id: novel_id).delete_all
+    end
+
     def find_by_userid_and_novelid(usr_id, nvl_id)
       where(user_id: usr_id, novel_id: nvl_id).first || nil
     end
